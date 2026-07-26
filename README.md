@@ -11,7 +11,7 @@ Pages: [pydevices.github.io/pydisplay_android](https://pydevices.github.io/pydis
 | PyPI name | Import | Role |
 |-----------|--------|------|
 | [usdl2](https://test.pypi.org/project/usdl2/) | `usdl2` | Native SDL2 subset (Android wheels: `android_21_*`) |
-| [graphics-cmod](https://test.pypi.org/project/graphics-cmod/) | `graphics` | Native graphics (`graphics` recipe → `graphics-cmod`) |
+| [pygraphics-cmod](https://test.pypi.org/project/pygraphics-cmod/) | `pygraphics` | Native pygraphics (`pygraphics` recipe → `pygraphics-cmod`) |
 | [displaysys](https://test.pypi.org/project/displaysys/) | `displaysys` | Display core + backends (`SDLDisplay`, …) |
 | [eventsys](https://test.pypi.org/project/eventsys/) | `eventsys` | Event runtime / input queue |
 | [multimer](https://test.pypi.org/project/multimer/) | `multimer` | Timers (`_sdl2` backend on Android) |
@@ -45,7 +45,7 @@ Package id: **`org.pydevices.p4a_app`**. Host deps: `requirements-dev.txt`.
 `buildozer.spec` paint requirements:
 
 ```
-python3,sdl2,usdl2,displaysys,eventsys,graphics,multimer
+python3,sdl2,usdl2,displaysys,eventsys,pygraphics,multimer
 ```
 
 (`python3` unpinned — p4a pairs target/host Python; do not pin `python3==3.13`.)
