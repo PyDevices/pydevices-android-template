@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
-# Download display_driver.py and lv_utils.py from the pydisplay GitHub repo.
+# Download display_driver.py from PyDevices/lv_bindings (LVGL glue for pydisplay).
 #
 # Usage:
 #   ./scripts/fetch_pydisplay_addons.sh DEST_DIR
 #
 # Environment:
-#   PYDISPLAY_GITHUB_REPO   GitHub repo (default: PyDevices/pydisplay)
-#   PYDISPLAY_GITHUB_REF    Branch, tag, or commit (default: main)
+#   LV_BINDINGS_GITHUB_REPO   GitHub repo (default: PyDevices/lv_bindings)
+#   LV_BINDINGS_GITHUB_REF    Branch, tag, or commit (default: main)
 set -euo pipefail
 
 DEST="${1:-}"
@@ -16,9 +16,9 @@ if [[ -z "$DEST" ]]; then
   exit 1
 fi
 
-REPO="${PYDISPLAY_GITHUB_REPO:-PyDevices/pydisplay}"
-REF="${PYDISPLAY_GITHUB_REF:-main}"
-BASE="https://raw.githubusercontent.com/${REPO}/${REF}/src/add_ons"
+REPO="${LV_BINDINGS_GITHUB_REPO:-PyDevices/lv_bindings}"
+REF="${LV_BINDINGS_GITHUB_REF:-main}"
+BASE="https://raw.githubusercontent.com/${REPO}/${REF}/python"
 
 mkdir -p "$DEST"
 
@@ -35,4 +35,3 @@ fetch_one() {
 }
 
 fetch_one display_driver.py
-fetch_one lv_utils.py
