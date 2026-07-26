@@ -20,7 +20,7 @@
 #
 # Environment:
 #   VENV_DIR            Host build venv (default: $SCRIPT_DIR/.venv)
-#   REQUIREMENTS        Host pip requirements (default: $SCRIPT_DIR/requirements.txt)
+#   REQUIREMENTS        Host pip requirements (default: $SCRIPT_DIR/requirements-dev.txt)
 #   ANDROID_HOME        Android SDK (default: ~/.buildozer/android/platform/android-sdk)
 #   ANDROID_NDK_HOME    Android NDK (auto-detected under $ANDROID_HOME/ndk when unset)
 #   JAVA_HOME           JDK for Android tooling (auto-detected from java on PATH when unset)
@@ -32,7 +32,7 @@ set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 VENV_DIR="${VENV_DIR:-$SCRIPT_DIR/.venv}"
-REQUIREMENTS="${REQUIREMENTS:-$SCRIPT_DIR/requirements.txt}"
+REQUIREMENTS="${REQUIREMENTS:-$SCRIPT_DIR/requirements-dev.txt}"
 APP_DIR="$SCRIPT_DIR/p4a_app"
 SPEC="$APP_DIR/buildozer.spec"
 TESTPYPI_INDEX="${TESTPYPI_INDEX:-https://test.pypi.org/simple/}"
@@ -143,7 +143,7 @@ require_file() {
 }
 
 ensure_build_venv() {
-    require_file "$REQUIREMENTS" "requirements.txt"
+    require_file "$REQUIREMENTS" "requirements-dev.txt"
     if [[ ! -x "$PYTHON" ]]; then
         echo "==> Creating build venv at $VENV_DIR"
         python3 -m venv "$VENV_DIR"

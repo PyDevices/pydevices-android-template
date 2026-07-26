@@ -31,7 +31,7 @@ Prerequisites: [Android SDK + NDK](https://python-for-android.readthedocs.io/en/
 ./scripts/emulator.sh
 ```
 
-`build_android.sh` creates `.venv/` and installs host deps from `requirements.txt`. Package id: **`org.pydevices.p4a_app`**. Launcher label comes from `title` in `p4a_app/buildozer.spec`.
+`build_android.sh` creates `.venv/` and installs host deps from `requirements-dev.txt`. Package id: **`org.pydevices.p4a_app`**. Launcher label comes from `title` in `p4a_app/buildozer.spec`.
 
 ### Icon and presplash
 
