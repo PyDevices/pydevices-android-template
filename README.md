@@ -19,7 +19,6 @@ Pages: [pydevices.github.io/pydisplay_android](https://pydevices.github.io/pydis
 
 Recipes leave versions unpinned so pip takes the latest matching wheel. Pin with `version = "…"` in a recipe when you need a frozen APK.
 
-LVGL glue (`display_driver.py`) is fetched from [lv_bindings](https://github.com/PyDevices/lv_bindings) with `FETCH_LVGL_ADDONS=1 ./build_android.sh`.
 
 ## 🚀 Build APK
 

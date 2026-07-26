@@ -24,7 +24,6 @@
 #   ANDROID_HOME        Android SDK (default: ~/.buildozer/android/platform/android-sdk)
 #   ANDROID_NDK_HOME    Android NDK (auto-detected under $ANDROID_HOME/ndk when unset)
 #   JAVA_HOME           JDK for Android tooling (auto-detected from java on PATH when unset)
-#   FETCH_LVGL_ADDONS   Set to 1 to fetch display_driver.py from lv_bindings (LVGL apps)
 #   ALLOW_CLEAN         Set to 1 to permit clean/distclean args (default: refuse)
 #
 # Runtime deps are installed from TestPyPI via p4a PyProjectRecipe wrappers in p4a_recipes/.
@@ -223,11 +222,6 @@ resolve_app_title() {
 }
 
 resolve_app_title
-
-if [[ "${FETCH_LVGL_ADDONS:-0}" == "1" ]]; then
-    echo "==> Fetching display_driver.py from lv_bindings on GitHub"
-    "$SCRIPT_DIR/scripts/fetch_pydisplay_addons.sh" "$APP_DIR"
-fi
 
 echo "==> Building Android APK in $APP_DIR"
 echo "    venv=$VENV_DIR"
