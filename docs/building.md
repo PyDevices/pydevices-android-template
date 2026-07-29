@@ -2,6 +2,8 @@
 
 Prerequisites: [Android SDK + NDK](https://python-for-android.readthedocs.io/en/latest/quickstart.html), Ubuntu/WSL build tools (`git`, `zip`, `openjdk-17-jdk`, `autoconf`, …). Tooling already downloaded by buildozer lives under `~/.buildozer/android/platform/` by default.
 
+A practical workflow is to iterate on the app logic first, then only change the packaging layer when you need a new dependency or a different build setting. In most cases that means editing **`p4a_app/paint.py`** or **`p4a_app/main.py`** for behavior, **`p4a_app/board_config.py`** for display/input wiring, and **`p4a_app/buildozer.spec`** or **`p4a_recipes/`** when the APK’s runtime package list changes.
+
 ```bash
 ./build_android.sh              # prompts for launcher title (Enter = current)
 ./build_android.sh -y           # keep current title (CI / automation)
