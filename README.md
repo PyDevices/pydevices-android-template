@@ -37,10 +37,10 @@ Package id: **`org.pydevices.p4a_app`**. Host deps: `requirements-dev.txt`.
 
 | File | Role |
 |------|------|
-| `p4a_app/main.py` | p4a entry: `import lib.path` then `import paint` |
+| `p4a_app/main.py` | p4a entry: `import utils.path` then `import paint` |
 | `p4a_app/paint.py` | Touch-paint (default APK behavior) |
 | `p4a_app/board_config.py` | SDL display + `eventsys.Runtime` (from pydisplay sdldisplay idiom) |
-| `p4a_app/lib/path.py` | `sys.path` helper (same idea as pydisplay `lib.path`) |
+| `p4a_app/utils/path.py` | `sys.path` helper (same idea as pydisplay `utils.path`) |
 | `p4a_app/icon.png` | Launcher icon + presplash |
 
 `buildozer.spec` paint requirements:

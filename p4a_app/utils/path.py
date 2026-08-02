@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: MIT
-"""Dev/APK helper: put sibling dirs on sys.path (same idea as pydisplay ``lib.path``).
+"""Dev/APK helper: put sibling dirs on sys.path (same idea as pydisplay ``utils.path``).
 
 Usage::
 
-    import lib.path  # noqa: F401
+    import utils.path  # noqa: F401
     import paint
 """
 
-directories = ["lib", "add_ons", "examples"]
+directories = ["utils"]
 prepend_directories = []
 RELPATH = True
 

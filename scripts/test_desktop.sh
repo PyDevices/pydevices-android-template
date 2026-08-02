@@ -22,7 +22,7 @@ fi
 
 cd "$APP"
 
-echo "== paint (main.py → import lib.path; import paint) =="
+echo "== paint (main.py → import utils.path; import paint) =="
 xvfb-run -a "$PYTHON" main.py &
 PID=$!
 sleep 2
