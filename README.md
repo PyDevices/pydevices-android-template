@@ -2,7 +2,7 @@
 
 Android APK template for [pydisplay](https://github.com/PyDevices/pydisplay): **python-for-android** recipes and a **buildozer** app (`p4a_app/`) others can clone and replace with their own code.
 
-On Android there is no MicroPython port; pydisplay runs under **CPython** in a **python-for-android** APK with the **SDL2 bootstrap**. Runtime packages install from **[TestPyPI](https://test.pypi.org/)** — not from local git checkouts.
+On Android there is no MicroPython port; pydisplay runs under **CPython** in a **python-for-android** APK with the **SDL2 bootstrap**. Runtime packages install from **[TestPyPI](https://test.pypi.org/)** as CPython wheels, not from local git checkouts.
 
 Use this repo when you want to turn a pydisplay app into an Android APK without building every dependency by hand. The usual loop is: edit the app under **`p4a_app/`**, adjust recipes or `buildozer.spec` only when the runtime dependency set changes, then rebuild with `./build_android.sh` and smoke-test on the emulator or a phone. If you are debugging display/input wiring, start in **`p4a_app/board_config.py`**; if you are changing the visible demo behavior, start in **`p4a_app/paint.py`** or **`p4a_app/main.py`**.
 
