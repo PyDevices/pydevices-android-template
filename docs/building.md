@@ -103,7 +103,7 @@ Leave **`p4a_app/`** alone only when you need packaging or host tooling changes:
 
 | Need | Where |
 |------|--------|
-| New / different TestPyPI wheel install | `p4a_recipes/` (+ list the recipe name in `buildozer.spec` `requirements`) |
+| New / different CPython wheel install from TestPyPI | `p4a_recipes/` (+ list the recipe name in `buildozer.spec` `requirements`) |
 | Build / install / smoke helpers | `build_android.sh`, `scripts/` |
 
 Keep `p4a.local_recipes` pointed at this repo’s `p4a_recipes/` unless you are shipping your own recipe tree.
