@@ -1,56 +1,58 @@
-# SPDX-License-Identifier: MIT
-"""Dev/APK helper: put sibling dirs on sys.path (same idea as pydisplay ``utils.path``).
+"""Put '', .frozen (MP/CP), lib, utils first on sys.path."""
 
-Usage::
+import os
+import sys
 
-    import utils.path  # noqa: F401
-    import paint
-"""
+__all__ = ["add", "cwd", "update"]
+_extra_dirs = ("utils",)
 
-directories = ["utils"]
-prepend_directories = []
-RELPATH = True
+
+def cwd():
+    path = os.getcwd()
+    return path if path[-1] == "/" else path + "/"
+
+
+def _exists(name):
+    if name in ("", ".frozen"):
+        return True
+    path = name if name.startswith("/") else cwd() + name
+    try:
+        os.stat(path)
+        return True
+    except OSError:
+        return False
+
+
+def add(directory, front=False):
+    if not _exists(directory):
+        return
+    if directory in sys.path:
+        sys.path.remove(directory)
+    if front:
+        sys.path.insert(0, directory)
+    else:
+        sys.path.append(directory)
 
 
 def update():
-    import os
-    import sys
+    # Prepend in reverse so the final order is:
+    # '', .frozen, lib, utils, <stdlib...>
+    # utils must precede the stdlib so ``import secrets`` resolves to
+    # utils/secrets.py on CPython (stdlib also ships a ``secrets`` module).
+    for directory in reversed(_extra_dirs):
+        add(directory, front=True)
+    add("lib", front=True)
+    if sys.implementation.name in ("micropython", "circuitpython"):
+        add(".frozen", front=True)
+    add("", front=True)
+    try:
+        import pydisplay_test_mode
 
-    def find_dir(directory):
-        try:
-            os.stat(directory)
-            return True
-        except OSError:
-            return False
-
-    def resolve_entry(directory):
-        is_abs = directory.startswith("/") or (len(directory) > 1 and directory[1] == ":")
-        target = directory if is_abs else cwd + directory
-        if not find_dir(target):
-            return None
-        return target if is_abs or not RELPATH else directory
-
-    cwd = os.getcwd()
-    if cwd[-1] != "/":
-        cwd += "/"
-
-    for directory in prepend_directories:
-        entry = resolve_entry(directory)
-        if entry is not None and entry not in sys.path:
-            sys.path.insert(0, entry)
-
-    for directory in directories:
-        entry = resolve_entry(directory)
-        if entry is not None and entry not in sys.path:
-            sys.path.append(entry)
-
-
-def add(directory, first=False):
-    if first:
-        prepend_directories.append(directory)
-    else:
-        directories.append(directory)
-    update()
+        quiet = pydisplay_test_mode.ENABLED
+    except ImportError:
+        quiet = False
+    if not quiet:
+        print("path.py:  updated sys.path.")
 
 
 update()

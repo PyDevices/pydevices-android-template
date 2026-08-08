@@ -1,6 +1,6 @@
 [app]
-title = Paint
-package.name = p4a_app
+title = PyDevices Launcher
+package.name = launcher
 package.domain = org.pydevices
 source.dir = .
 source.include_exts = py,xml
@@ -9,10 +9,10 @@ source.main = main.py
 icon.filename = %(source.dir)s/icon.png
 presplash.filename = %(source.dir)s/icon.png
 version = 0.5.0
-# Paint milestone: no LVGL. Native: pygraphics (TestPyPI Android wheels).
-# pydisplay-desktop ships pure-Python usdl2.py + MCU-shaped board_config;
-# p4a sdl2 bootstrap provides libSDL2.so. displaysys includes SDLDisplay.
-requirements = python3,sdl2,pydisplay-desktop,displaysys,eventsys,pygraphics,multimer
+# Standalone LVGL launcher + baked TestPyPI stack. Native: pygraphics /
+# lvgl-cpython Android wheels. pydisplay-desktop ships usdl2 + board_config;
+# p4a sdl2 bootstrap provides libSDL2.so.
+requirements = python3,sdl2,setuptools,pip,pydisplay-desktop,displaysys,eventsys,pygraphics,multimer,lvglcpython,palettes,pdwidgets
 orientation = portrait
 fullscreen = 0
 android.api = 31
@@ -35,9 +35,10 @@ android.manifest.intent_filters = %(source.dir)s/intent_filters_tv.xml
 android.extra_manifest_xml = %(source.dir)s/tv_features.xml
 
 # PyDevices wheels on TestPyPI (unpinned recipes install latest matching wheel).
+# TestPyPI primary; PyPI secondary for deps that exist only on production PyPI.
 p4a.extra_args = --extra-index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/
 
-# Thin PyProjectRecipe wrappers that install matching TestPyPI wheels.
+# Thin PyProjectRecipe wrappers that install matching TestPyPI / PyPI wheels.
 p4a.local_recipes = ../p4a_recipes
 
 [buildozer]

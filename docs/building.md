@@ -2,17 +2,17 @@
 
 Prerequisites: [Android SDK + NDK](https://python-for-android.readthedocs.io/en/latest/quickstart.html), Ubuntu/WSL build tools (`git`, `zip`, `openjdk-17-jdk`, `autoconf`, …). Tooling already downloaded by buildozer lives under `~/.buildozer/android/platform/` by default.
 
-A practical workflow is to iterate on the app logic first, then only change the packaging layer when you need a new dependency or a different build setting. In most cases that means editing **`p4a_app/paint.py`** or **`p4a_app/main.py`** for behavior (including `PYDISPLAY_*` size env), and **`p4a_app/buildozer.spec`** or **`p4a_recipes/`** when the APK’s runtime package list changes. Display wiring comes from TestPyPI **pydisplay-desktop** (`board_config` + pure-Python `usdl2`); do not add a local `board_config.py` that shadows it.
+A practical workflow is to iterate on the app logic first, then only change the packaging layer when you need a new dependency or a different build setting. In most cases that means editing **`p4a_app/launcher.py`** or **`p4a_app/main.py`** for behavior (including `PYDISPLAY_*` size env), and **`p4a_app/buildozer.spec`** or **`p4a_recipes/`** when the APK’s runtime package list changes. Display wiring comes from TestPyPI **pydisplay-desktop** (`board_config` + pure-Python `usdl2`); do not add a local `board_config.py` that shadows it.
 
 ```bash
 ./build_android.sh              # prompts for launcher title (Enter = current)
 ./build_android.sh -y           # keep current title (CI / automation)
 ./build_android.sh --title Paint
-# APK: p4a_app/bin/p4a_app-0.5.0-*-debug.apk (name may vary)
+# APK: p4a_app/bin/launcher-0.5.0-*-debug.apk (name may vary)
 ./scripts/emulator.sh
 ```
 
-`build_android.sh` creates `.venv/` and installs host deps from `requirements-dev.txt`. Package id: **`org.pydevices.p4a_app`**. Launcher label comes from `title` in `p4a_app/buildozer.spec`.
+`build_android.sh` creates `.venv/` and installs host deps from `requirements-dev.txt`. Package id: **`org.pydevices.launcher`**. Launcher label comes from `title` in `p4a_app/buildozer.spec` (**PyDevices Launcher**).
 
 ## Icon and presplash
 
@@ -94,7 +94,7 @@ Almost everything a user customizes for their APK lives under **`p4a_app/`**:
 
 | Customize | Where |
 |-----------|--------|
-| Entry / demo code | `p4a_app/main.py`, `paint.py` (or your module + the `import` in `main.py`) |
+| Entry / demo code | `p4a_app/main.py`, `launcher.py` (or stage examples via pydisplay `bin/android.sh`) |
 | Display size / rotation / scale | `PYDISPLAY_*` env in `main.py` (or `board_config_tv.py` for TV) |
 | Title, package id, orientation, version, permissions, `requirements` | `p4a_app/buildozer.spec` |
 | Icon / presplash | `p4a_app/icon.png` (paths in the spec) |

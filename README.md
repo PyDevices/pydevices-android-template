@@ -4,7 +4,7 @@ Android APK template for [pydisplay](https://github.com/PyDevices/pydisplay): **
 
 On Android there is no MicroPython port; pydisplay runs under **CPython** in a **python-for-android** APK with the **SDL2 bootstrap** (no Kivy). Runtime packages install from **[TestPyPI](https://test.pypi.org/)** as CPython wheels, not from local git checkouts. Pure-Python `usdl2` and the MCU-shaped `board_config` come from **pydisplay-desktop**; p4a’s `sdl2` recipe supplies `libSDL2.so`.
 
-Use this repo when you want to turn a pydisplay app into an Android APK without building every dependency by hand. The usual loop is: edit the app under **`p4a_app/`**, adjust recipes or `buildozer.spec` only when the runtime dependency set changes, then rebuild with `./build_android.sh` and smoke-test on the emulator or a phone. Display/input wiring is packaged `board_config` + `displaysys.AutoDisplay` (set `PYDISPLAY_*` in `main.py`); change visible demo behavior in **`p4a_app/paint.py`** or **`p4a_app/main.py`**.
+The default APK is **PyDevices Launcher** (`org.pydevices.launcher`): a baked LVGL home screen. Buttons fetch apps on demand (`mip` from GitHub + PyDevices MIP index, or `pip` with TestPyPI primary / PyPI secondary). Cold start never auto-fetches. From a pydisplay checkout, stage host files over adb with `./bin/android.sh` (cwd path, like CLI Python — not PyScript gallery lookup).
 
 Pages: [pydevices.github.io/pydisplay_android](https://pydevices.github.io/pydisplay_android/)
 
@@ -17,7 +17,9 @@ Pages: [pydevices.github.io/pydisplay_android](https://pydevices.github.io/pydis
 | [displaysys](https://test.pypi.org/project/displaysys/) | `displaysys` | Display core + backends (`AutoDisplay`, `SDLDisplay`, …) |
 | [eventsys](https://test.pypi.org/project/eventsys/) | `eventsys` | Event runtime / input queue |
 | [multimer](https://test.pypi.org/project/multimer/) | `multimer` | Timers (`threading` on Android; not `sdl2`) |
-| [lvgl-cpython](https://test.pypi.org/project/lvgl-cpython/) | `lvgl` | LVGL native extension (optional; not in paint `requirements`) |
+| [lvgl-cpython](https://test.pypi.org/project/lvgl-cpython/) | `lvgl` | LVGL native extension |
+| [palettes](https://test.pypi.org/project/palettes/) | `palettes` | Color palettes |
+| [pdwidgets](https://test.pypi.org/project/pdwidgets/) | `pdwidgets` | Widgets |
 
 Recipes leave versions unpinned so pip takes the latest matching wheel. Pin with `version = "…"` in a recipe when you need a frozen APK.
 
@@ -31,36 +33,51 @@ Recipes leave versions unpinned so pip takes the latest matching wheel. Pin with
 
 Full prerequisites, icon/presplash, emulator/phone, Samsung USB debugging, and `sdkmanager` notes: **[docs/building.md](docs/building.md)**.
 
-Package id: **`org.pydevices.p4a_app`**. Host deps: `requirements-dev.txt`.
+Package id: **`org.pydevices.launcher`** (launcher label: **PyDevices Launcher**). Host deps: `requirements-dev.txt`.
 
 ## App layout
 
 | File | Role |
 |------|------|
-| `p4a_app/main.py` | p4a entry: phone `PYDISPLAY_*` defaults, then `import paint` |
-| `p4a_app/paint.py` | Touch-paint (default APK behavior); `from board_config import …` |
-| `p4a_app/board_config_tv.py` | Optional: set landscape TV env before `paint` |
-| `p4a_app/utils/path.py` | `sys.path` helper (same idea as pydisplay `utils.path`) |
+| `p4a_app/main.py` | p4a entry: `PYDISPLAY_*` / `MULTIMER_BACKEND`, then `run_entry` or `launcher` |
+| `p4a_app/launcher.py` | Baked LVGL home (Update launcher / lv_test_timer buttons) |
+| `p4a_app/paint.py` | Touch-paint demo (stage via `android.sh`, not cold-start default) |
+| `p4a_app/board_config_tv.py` | Optional: set landscape TV env before entry |
+| `p4a_app/utils/path.py` | One-time copy of pydisplay `utils.path` |
+| `p4a_app/utils/mip.py` | One-time copy of pydisplay `utils.mip` |
 | `p4a_app/icon.png` | Launcher icon + presplash |
 
-`buildozer.spec` paint requirements:
+`buildozer.spec` requirements:
 
 ```
-python3,sdl2,pydisplay-desktop,displaysys,eventsys,pygraphics,multimer
+python3,sdl2,setuptools,pip,pydisplay-desktop,displaysys,eventsys,pygraphics,multimer,lvglcpython,palettes,pdwidgets
 ```
 
 (`python3` unpinned — p4a pairs target/host Python; do not pin `python3==3.13`.)
+
+## Stage examples from pydisplay
+
+From `pydisplay/src` (path relative to cwd):
+
+```bash
+../bin/android.sh examples/lv_test_timer.py
+../bin/android.sh examples/paint.py
+../bin/android.sh --clear          # back to LVGL home
+../bin/android.sh --logcat
+```
+
+Matrix opt-in: `tools/example_test_kit.py --only-runtime android …`.
 
 ## Layout
 
 | Path | Role |
 |------|------|
-| `p4a_app/` | buildozer project + sample entry |
-| `p4a_recipes/` | TestPyPI `PyProjectRecipe` wrappers |
+| `p4a_app/` | buildozer project + launcher entry |
+| `p4a_recipes/` | TestPyPI / PyPI `PyProjectRecipe` wrappers |
 | `docs/` | Build / device guides |
 | `scripts/` | Host helpers (`phone.sh`, `emulator.sh`, `test_desktop.sh`, …) |
 | `build_android.sh` | Build the debug APK |
 
 ## Customize
 
-Almost everything for your APK lives under **`p4a_app/`** (entry, `paint`, `buildozer.spec`, icon). Recipes and host tooling: see [docs/building.md](docs/building.md#your-own-app).
+Almost everything for your APK lives under **`p4a_app/`** (entry, `launcher.py`, `buildozer.spec`, icon). Recipes and host tooling: see [docs/building.md](docs/building.md#your-own-app).

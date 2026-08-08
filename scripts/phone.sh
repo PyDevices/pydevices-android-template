@@ -10,14 +10,14 @@
 #   ANDROID_HOME          Android SDK (default: ~/.buildozer/android/platform/android-sdk)
 #   ADB                   Override adb executable (auto-detected on WSL vs Linux)
 #   ANDROID_SERIAL        Target a specific phone when multiple are connected
-#   PACKAGE_ID            App id (default: org.pydevices.p4a_app)
+#   PACKAGE_ID            App id (default: org.pydevices.launcher)
 #   ACTIVITY              Main activity (default: org.kivy.android.PythonActivity)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 APP="$ROOT/p4a_app"
 
-PACKAGE_ID="${PACKAGE_ID:-org.pydevices.p4a_app}"
+PACKAGE_ID="${PACKAGE_ID:-org.pydevices.launcher}"
 ACTIVITY="${ACTIVITY:-org.kivy.android.PythonActivity}"
 COMPONENT="${PACKAGE_ID}/${ACTIVITY}"
 
