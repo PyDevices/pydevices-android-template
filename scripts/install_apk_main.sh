@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: MIT
-# Optional helper: rewrite main.py to import an alternate module (e.g. for LVGL).
-# Default paint entry is the committed p4a_app/main.py (`import utils.path` / `import paint`).
+# Optional helper: rewrite user main.py to import an alternate module.
+# Packaged p4a entry is boot.py; main.py is the MicroPython-style user entry.
 #
 # Usage:
 #   ./scripts/install_apk_main.sh DEST_DIR
 #
 # Environment:
-#   APK_ENTRY   Module name to import after utils.path (default: paint). Set to "skip" to no-op.
+#   APK_ENTRY   Module name to import (default: paint). Set to "skip" to no-op.
 set -euo pipefail
 
 DEST="${1:-}"
@@ -31,7 +31,7 @@ fi
 
 cat > "$DEST/main.py" <<PY
 # SPDX-License-Identifier: MIT
-# p4a SDL2 bootstrap requires a file named main.py (rewritten by install_apk_main.sh).
+# User entry (boot.py is the p4a source.main). Rewritten by install_apk_main.sh.
 import utils.path  # noqa: F401
 import ${ENTRY}
 PY

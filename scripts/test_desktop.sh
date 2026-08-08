@@ -22,8 +22,9 @@ fi
 
 cd "$APP"
 
-echo "== paint (main.py → import utils.path; import paint) =="
-xvfb-run -a "$PYTHON" main.py &
+echo "== boot.py → main.py (launcher import; short smoke) =="
+# boot.py parks forever on android only; on desktop it returns after main.
+xvfb-run -a "$PYTHON" -c "import boot" &
 PID=$!
 sleep 2
 kill "$PID" 2>/dev/null || true

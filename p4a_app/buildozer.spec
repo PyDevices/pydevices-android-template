@@ -4,6 +4,8 @@ package.name = launcher
 package.domain = org.pydevices
 source.dir = .
 source.include_exts = py,xml
+# p4a/sdl2 still requires a main.py in the private bundle. Runtime entry is
+# boot.py via the getEntryPoint patch in build_android.sh (MicroPython-shaped).
 source.main = main.py
 # PyDevices logo (from PyDevices.github.io/assets/img/logo-512.png)
 icon.filename = %(source.dir)s/icon.png

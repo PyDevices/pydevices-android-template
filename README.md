@@ -4,7 +4,7 @@ Android APK template for [pydisplay](https://github.com/PyDevices/pydisplay): **
 
 On Android there is no MicroPython port; pydisplay runs under **CPython** in a **python-for-android** APK with the **SDL2 bootstrap** (no Kivy). Runtime packages install from **[TestPyPI](https://test.pypi.org/)** as CPython wheels, not from local git checkouts. Pure-Python `usdl2` and the MCU-shaped `board_config` come from **pydisplay-desktop**; p4a’s `sdl2` recipe supplies `libSDL2.so`.
 
-The default APK is **PyDevices Launcher** (`org.pydevices.launcher`): a baked LVGL home screen. Buttons fetch apps on demand (`mip` from GitHub + PyDevices MIP index, or `pip` with TestPyPI primary / PyPI secondary). Cold start never auto-fetches. From a pydisplay checkout, stage host files over adb with `./bin/android.sh` (cwd path, like CLI Python — not PyScript gallery lookup).
+The default APK is **PyDevices Launcher** (`org.pydevices.launcher`): a baked LVGL home screen. Buttons fetch apps on demand (`mip` from GitHub + PyDevices MIP index, or `pip` with TestPyPI primary / PyPI secondary). Cold start never auto-fetches. Stage host files over adb with **`scripts/android.sh`** (cwd path, like CLI Python — not PyScript gallery lookup; symlink from `~/bin/android.sh` keeps it on PATH).
 
 Pages: [pydevices.github.io/pydisplay_android](https://pydevices.github.io/pydisplay_android/)
 
@@ -39,9 +39,11 @@ Package id: **`org.pydevices.launcher`** (launcher label: **PyDevices Launcher**
 
 | File | Role |
 |------|------|
-| `p4a_app/main.py` | p4a entry: `PYDISPLAY_*` / `MULTIMER_BACKEND`, then `run_entry` or `launcher` |
+| `p4a_app/boot.py` | Startup (env / path / stdio), then `main.py` or REPL; Activity entry via build patch |
+| `p4a_app/main.py` | User entry (default: LVGL launcher). Omit or replace via `android.sh` |
 | `p4a_app/launcher.py` | Baked LVGL home (Update launcher / lv_test_timer buttons) |
 | `p4a_app/paint.py` | Touch-paint demo (stage via `android.sh`, not cold-start default) |
+| `p4a_app/stdio_sidecar.py` | Localhost stdio bridge for `android.sh` TTY attach / `-i` REPL |
 | `p4a_app/board_config_tv.py` | Optional: set landscape TV env before entry |
 | `p4a_app/utils/` | Full pydisplay `src/utils/` tree (`path`, `mip`, `tft_config`, `fonts`, …); synced from sibling pydisplay by `build_android.sh` |
 | `p4a_app/icon.png` | Launcher icon + presplash |
@@ -56,16 +58,18 @@ python3,sdl2,setuptools,pip,pydisplay-desktop,displaysys,eventsys,pygraphics,mul
 
 ## Stage examples from pydisplay
 
-From `pydisplay/src` (path relative to cwd):
+From `pydisplay/src` (path relative to cwd), with `android.sh` on PATH:
 
 ```bash
-../bin/android.sh examples/lv_test_timer.py
-../bin/android.sh examples/paint.py
-../bin/android.sh --clear          # back to LVGL home
-../bin/android.sh --logcat
+android.sh examples/lv_test_timer.py
+android.sh examples/paint.py
+android.sh -i               # >>> REPL in this terminal (like python -i)
+android.sh --clear          # back to LVGL home
+android.sh --logcat
+android.sh --no-attach …    # launch only (no TTY stdio attach)
 ```
 
-Matrix opt-in: `tools/example_test_kit.py --only-runtime android …`.
+Or call `../pydisplay_android/scripts/android.sh` / this repo’s `./scripts/android.sh` directly. Matrix opt-in: `pydisplay/tools/example_test_kit.py --only-runtime android …`.
 
 ## Layout
 
@@ -74,7 +78,7 @@ Matrix opt-in: `tools/example_test_kit.py --only-runtime android …`.
 | `p4a_app/` | buildozer project + launcher entry |
 | `p4a_recipes/` | TestPyPI / PyPI `PyProjectRecipe` wrappers |
 | `docs/` | Build / device guides |
-| `scripts/` | Host helpers (`phone.sh`, `emulator.sh`, `test_desktop.sh`, …) |
+| `scripts/` | Host helpers (`android.sh`, `phone.sh`, `emulator.sh`, `test_desktop.sh`, …) |
 | `build_android.sh` | Build the debug APK |
 
 ## Customize

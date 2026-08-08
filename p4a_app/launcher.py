@@ -4,8 +4,8 @@
 Cold start never fetches. Buttons use mip (GitHub + PyDevices INDEX) or pip
 (TestPyPI primary, PyPI secondary) into ``user_pkgs/``, then import/run.
 
-``main.py`` calls :func:`start`. Do not auto-run on import so mip can reload
-this module and refresh the UI via :func:`build_ui`.
+Default packaged ``main.py`` calls :func:`start`. Do not auto-run on import so
+mip can reload this module and refresh the UI via :func:`build_ui`.
 """
 
 from __future__ import annotations

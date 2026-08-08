@@ -2,7 +2,7 @@
 
 Prerequisites: [Android SDK + NDK](https://python-for-android.readthedocs.io/en/latest/quickstart.html), Ubuntu/WSL build tools (`git`, `zip`, `openjdk-17-jdk`, `autoconf`, …). Tooling already downloaded by buildozer lives under `~/.buildozer/android/platform/` by default.
 
-A practical workflow is to iterate on the app logic first, then only change the packaging layer when you need a new dependency or a different build setting. In most cases that means editing **`p4a_app/launcher.py`** or **`p4a_app/main.py`** for behavior (including `PYDISPLAY_*` size env), and **`p4a_app/buildozer.spec`** or **`p4a_recipes/`** when the APK’s runtime package list changes. Display wiring comes from TestPyPI **pydisplay-desktop** (`board_config` + pure-Python `usdl2`); do not add a local `board_config.py` that shadows it.
+A practical workflow is to iterate on the app logic first, then only change the packaging layer when you need a new dependency or a different build setting. In most cases that means editing **`p4a_app/boot.py`** (startup / `PYDISPLAY_*`), **`p4a_app/main.py`** / **`launcher.py`** (user entry), and **`p4a_app/buildozer.spec`** or **`p4a_recipes/`** when the APK’s runtime package list changes. Display wiring comes from TestPyPI **pydisplay-desktop** (`board_config` + pure-Python `usdl2`); do not add a local `board_config.py` that shadows it.
 
 ```bash
 ./build_android.sh              # prompts for launcher title (Enter = current)
@@ -13,6 +13,8 @@ A practical workflow is to iterate on the app logic first, then only change the 
 ```
 
 `build_android.sh` creates `.venv/` and installs host deps from `requirements-dev.txt`. It also rsyncs sibling `pydisplay/src/utils/` into `p4a_app/utils/` (full tree: `tft_config`, fonts, … — not only `path`/`mip`). Override the source with `PYDISPLAY_UTILS`. Runtime packages (**displaysys**, **pydisplay-desktop**, …) come from TestPyPI via `p4a_recipes/`. For local iteration only, pass `--local-modules` (or `ANDROID_DEBUG_LOCAL_MODULES=1`) to shadow `displaysys/`, `usdl2.py`, and Android audio modules from sibling checkouts into `p4a_app/`; default builds remove those shadows. Package id: **`org.pydevices.launcher`**. Launcher label comes from `title` in `p4a_app/buildozer.spec` (**PyDevices Launcher**).
+
+`p4a_app/stdio_sidecar.py` (started from `boot.py`) listens on localhost so `scripts/android.sh` can attach this terminal as the app’s stdin/stdout/stderr, including `-i` for a MicroPython-style REPL. `build_android.sh` patches p4a’s `getEntryPoint` so the Activity runs `boot.py` before optional user `main.py` (upstream sdl2 otherwise hardcodes `main.py`).
 
 ## Icon and presplash
 
@@ -94,8 +96,8 @@ Almost everything a user customizes for their APK lives under **`p4a_app/`**:
 
 | Customize | Where |
 |-----------|--------|
-| Entry / demo code | `p4a_app/main.py`, `launcher.py` (or stage examples via pydisplay `bin/android.sh`) |
-| Display size / rotation / scale | `PYDISPLAY_*` env in `main.py` (or `board_config_tv.py` for TV) |
+| Entry / demo code | `p4a_app/main.py`, `launcher.py` (or stage examples via `scripts/android.sh`); startup in `boot.py` |
+| Display size / rotation / scale | `PYDISPLAY_*` env in `boot.py` (or `board_config_tv.py` from `main.py` for TV) |
 | Title, package id, orientation, version, permissions, `requirements` | `p4a_app/buildozer.spec` |
 | Icon / presplash | `p4a_app/icon.png` (paths in the spec) |
 
