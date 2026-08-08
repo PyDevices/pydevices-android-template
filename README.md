@@ -16,7 +16,7 @@ Pages: [pydevices.github.io/pydisplay_android](https://pydevices.github.io/pydis
 | [pygraphics](https://test.pypi.org/project/pygraphics/) | `pygraphics` | Native pygraphics (Android / desktop wheels) |
 | [displaysys](https://test.pypi.org/project/displaysys/) | `displaysys` | Display core + backends (`AutoDisplay`, `SDLDisplay`, …) |
 | [eventsys](https://test.pypi.org/project/eventsys/) | `eventsys` | Event runtime / input queue |
-| [multimer](https://test.pypi.org/project/multimer/) | `multimer` | Timers (`_sdl2` backend on Android) |
+| [multimer](https://test.pypi.org/project/multimer/) | `multimer` | Timers (`threading` on Android; not `sdl2`) |
 | [lvgl-cpython](https://test.pypi.org/project/lvgl-cpython/) | `lvgl` | LVGL native extension (optional; not in paint `requirements`) |
 
 Recipes leave versions unpinned so pip takes the latest matching wheel. Pin with `version = "…"` in a recipe when you need a frozen APK.

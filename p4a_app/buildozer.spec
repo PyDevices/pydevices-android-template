@@ -17,7 +17,9 @@ orientation = portrait
 fullscreen = 0
 android.api = 31
 android.minapi = 24
-android.archs = arm64-v8a, armeabi-v7a
+# Phones/TVs: arm64-v8a. PC AVD (Pixel 9 x86_64): x86_64. TestPyPI native
+# wheels cover both; cibuildwheel has no armeabi_v7a.
+android.archs = arm64-v8a,x86_64
 # Prefer p4a.bootstrap (android.bootstrap is deprecated in newer buildozer).
 p4a.bootstrap = sdl2
 android.bootstrap = sdl2
