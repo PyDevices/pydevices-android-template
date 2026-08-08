@@ -7,6 +7,8 @@
 # Options:
 #   -y, --yes, --no-prompt   Keep the current buildozer.spec title (no prompt)
 #   --title NAME             Set the launcher title (no prompt)
+#   --local-modules          Shadow TestPyPI with local displaysys/usdl2/audio
+#                            (same as ANDROID_DEBUG_LOCAL_MODULES=1)
 #   -h, --help               Show this help
 #
 # Interactive builds prompt for the launcher title (buildozer.spec `title`),
@@ -25,8 +27,15 @@
 #   ANDROID_NDK_HOME    Android NDK (auto-detected under $ANDROID_HOME/ndk when unset)
 #   JAVA_HOME           JDK for Android tooling (auto-detected from java on PATH when unset)
 #   ALLOW_CLEAN         Set to 1 to permit clean/distclean args (default: refuse)
+#   ANDROID_DEBUG_LOCAL_MODULES
+#                       Set to 1 to sync local displaysys/, usdl2.py, and
+#                       Android audio modules into p4a_app/ (debug only).
+#                       Default (unset/0): remove those shadows so TestPyPI
+#                       displaysys + pydisplay-desktop wheels win.
 #
 # Runtime deps are installed from TestPyPI via p4a PyProjectRecipe wrappers in p4a_recipes/.
+# Before packaging, syncs sibling pydisplay/src/utils → p4a_app/utils (override with
+# PYDISPLAY_UTILS). Excludes spotapi symlink, __pycache__, *.md, *.sh.
 set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
@@ -41,13 +50,15 @@ PIP="$VENV_DIR/bin/pip"
 BUILDOZER="$VENV_DIR/bin/buildozer"
 
 usage() {
-    sed -n '2,30p' "$0" | sed 's/^# \?//'
+    sed -n '2,38p' "$0" | sed 's/^# \?//'
     exit "${1:-0}"
 }
 
 NO_PROMPT=0
 APP_TITLE=""
 BUILDOZER_ARGS=()
+# 1 = sync local displaysys/usdl2/audio into p4a_app (debug). Default: TestPyPI only.
+ANDROID_DEBUG_LOCAL_MODULES="${ANDROID_DEBUG_LOCAL_MODULES:-0}"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -56,6 +67,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         -y|--yes|--no-prompt)
             NO_PROMPT=1
+            shift
+            ;;
+        --local-modules)
+            ANDROID_DEBUG_LOCAL_MODULES=1
             shift
             ;;
         --title)
@@ -186,6 +201,103 @@ setup_android_env() {
     export PATH="$VENV_DIR/bin:$PATH"
 }
 
+sync_utils_from_pydisplay() {
+    # Bake the full pydisplay utils tree (tft_config, fonts, …) — not only path/mip.
+    local src="${PYDISPLAY_UTILS:-$SCRIPT_DIR/../pydisplay/src/utils}"
+    local dst="$APP_DIR/utils"
+    if [[ ! -d "$src" ]]; then
+        echo "==> Skipping utils sync (missing $src); using existing $dst" >&2
+        require_dir "$dst" "p4a_app/utils"
+        require_file "$dst/path.py" "p4a_app/utils/path.py"
+        return 0
+    fi
+    echo "==> Syncing utils from $src -> $dst"
+    mkdir -p "$dst"
+    rsync -a --delete \
+        --exclude '__pycache__/' \
+        --exclude 'spotapi' \
+        --exclude '*.md' \
+        --exclude '*.sh' \
+        --delete-excluded \
+        "$src/" "$dst/"
+    require_file "$dst/path.py" "synced utils/path.py"
+    require_file "$dst/tft_config.py" "synced utils/tft_config.py"
+    require_dir "$dst/fonts" "synced utils/fonts"
+}
+
+clear_android_local_module_shadows() {
+    # Remove app-root shadows so site-packages (TestPyPI) win.
+    local path
+    for path in \
+        "$APP_DIR/displaysys" \
+        "$APP_DIR/usdl2.py" \
+        "$APP_DIR/androidaudio_session.py" \
+        "$APP_DIR/sdl2audio.py"
+    do
+        if [[ -e "$path" || -L "$path" ]]; then
+            echo "==> Removing local module shadow: $path"
+            rm -rf "$path"
+        fi
+    done
+}
+
+sync_android_audio_modules() {
+    # Debug only: shadow TestPyPI pydisplay-desktop audio modules.
+    local hw="${MICROPYTHON_HARDWARE:-$SCRIPT_DIR/../micropython-hardware}"
+    local audio_src="$hw/drivers/audio"
+    if [[ ! -f "$audio_src/androidaudio_session.py" || ! -f "$audio_src/sdl2audio.py" ]]; then
+        echo "==> Skipping Android audio sync (missing $audio_src)" >&2
+        return 0
+    fi
+    echo "==> Syncing Android audio modules from $audio_src -> $APP_DIR"
+    cp -f "$audio_src/androidaudio_session.py" "$APP_DIR/androidaudio_session.py"
+    cp -f "$audio_src/sdl2audio.py" "$APP_DIR/sdl2audio.py"
+    require_file "$APP_DIR/androidaudio_session.py" "synced androidaudio_session.py"
+    require_file "$APP_DIR/sdl2audio.py" "synced sdl2audio.py"
+}
+
+sync_android_display_modules() {
+    # Debug only: shadow TestPyPI displaysys / usdl2 (pydisplay-desktop).
+    local pydisp="${PYDISPLAY_ROOT:-$SCRIPT_DIR/../pydisplay}"
+    local hw="${MICROPYTHON_HARDWARE:-$SCRIPT_DIR/../micropython-hardware}"
+    local disp_src="$pydisp/src/lib/displaysys"
+    local usdl2_src="$hw/drivers/usdl2.py"
+    if [[ -d "$disp_src" ]]; then
+        echo "==> Syncing displaysys from $disp_src -> $APP_DIR/displaysys"
+        mkdir -p "$APP_DIR/displaysys"
+        rsync -a --delete \
+            --exclude '__pycache__/' \
+            --exclude '*.md' \
+            --delete-excluded \
+            "$disp_src/" "$APP_DIR/displaysys/"
+        require_file "$APP_DIR/displaysys/androidsdl.py" "synced displaysys/androidsdl.py"
+        require_file "$APP_DIR/displaysys/autodisplay.py" "synced displaysys/autodisplay.py"
+    else
+        echo "==> Skipping displaysys sync (missing $disp_src)" >&2
+    fi
+    if [[ -f "$usdl2_src" ]]; then
+        echo "==> Syncing usdl2 from $usdl2_src -> $APP_DIR"
+        cp -f "$usdl2_src" "$APP_DIR/usdl2.py"
+        require_file "$APP_DIR/usdl2.py" "synced usdl2.py"
+    else
+        echo "==> Skipping usdl2 sync (missing $usdl2_src)" >&2
+    fi
+}
+
+maybe_sync_android_local_modules() {
+    case "${ANDROID_DEBUG_LOCAL_MODULES}" in
+        1|true|TRUE|yes|YES)
+            echo "==> ANDROID_DEBUG_LOCAL_MODULES=1: syncing local displaysys/usdl2/audio"
+            sync_android_audio_modules
+            sync_android_display_modules
+            ;;
+        *)
+            echo "==> Using TestPyPI displaysys + pydisplay-desktop (no local module shadows)"
+            clear_android_local_module_shadows
+            ;;
+    esac
+}
+
 ensure_build_venv
 setup_android_env
 
@@ -194,6 +306,8 @@ require_dir "$SCRIPT_DIR/p4a_recipes" "p4a_recipes"
 require_file "$APP_DIR/main.py" "p4a_app/main.py"
 require_file "$APP_DIR/paint.py" "p4a_app/paint.py"
 require_file "$SPEC" "p4a_app/buildozer.spec"
+sync_utils_from_pydisplay
+maybe_sync_android_local_modules
 
 resolve_app_title() {
     local default title input
@@ -226,6 +340,7 @@ resolve_app_title
 echo "==> Building Android APK in $APP_DIR"
 echo "    venv=$VENV_DIR"
 echo "    TestPyPI=$TESTPYPI_INDEX"
+echo "    ANDROID_DEBUG_LOCAL_MODULES=$ANDROID_DEBUG_LOCAL_MODULES"
 echo "    ANDROID_HOME=$ANDROID_HOME"
 if [[ -n "${ANDROID_NDK_HOME:-}" ]]; then
     echo "    ANDROID_NDK_HOME=$ANDROID_NDK_HOME"

@@ -43,8 +43,7 @@ Package id: **`org.pydevices.launcher`** (launcher label: **PyDevices Launcher**
 | `p4a_app/launcher.py` | Baked LVGL home (Update launcher / lv_test_timer buttons) |
 | `p4a_app/paint.py` | Touch-paint demo (stage via `android.sh`, not cold-start default) |
 | `p4a_app/board_config_tv.py` | Optional: set landscape TV env before entry |
-| `p4a_app/utils/path.py` | One-time copy of pydisplay `utils.path` |
-| `p4a_app/utils/mip.py` | One-time copy of pydisplay `utils.mip` |
+| `p4a_app/utils/` | Full pydisplay `src/utils/` tree (`path`, `mip`, `tft_config`, `fonts`, …); synced from sibling pydisplay by `build_android.sh` |
 | `p4a_app/icon.png` | Launcher icon + presplash |
 
 `buildozer.spec` requirements:

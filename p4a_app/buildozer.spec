@@ -12,10 +12,13 @@ version = 0.5.0
 # Standalone LVGL launcher + baked TestPyPI stack. Native: pygraphics /
 # lvgl-cpython Android wheels. pydisplay-desktop ships usdl2 + board_config;
 # p4a sdl2 bootstrap provides libSDL2.so.
-requirements = python3,sdl2,setuptools,pip,pydisplay-desktop,displaysys,eventsys,pygraphics,multimer,lvglcpython,palettes,pdwidgets
-orientation = portrait
+requirements = python3,sdl2,setuptools,pip,pyjnius,pydisplay-desktop,displaysys,eventsys,pygraphics,multimer,lvglcpython,palettes,pdwidgets
+# Both aspects allowed in the manifest; AndroidSDLDisplay then locks to fixed
+# LANDSCAPE or PORTRAIT from logical size (tilt does nothing).
+orientation = portrait,landscape
 fullscreen = 0
-android.api = 31
+# API 34+: FOREGROUND_SERVICE_MEDIA_PLAYBACK + typed FGS required for audio.
+android.api = 34
 android.minapi = 24
 # Phones/TVs: arm64-v8a. PC AVD (Pixel 9 x86_64): x86_64. TestPyPI native
 # wheels cover both; cibuildwheel has no armeabi_v7a.
@@ -23,7 +26,10 @@ android.archs = arm64-v8a,x86_64
 # Prefer p4a.bootstrap (android.bootstrap is deprecated in newer buildozer).
 p4a.bootstrap = sdl2
 android.bootstrap = sdl2
-android.permissions = INTERNET
+# mediaPlayback FGS + notifications (Android 14+/17 AudioHardening).
+android.permissions = INTERNET,FOREGROUND_SERVICE,FOREGROUND_SERVICE_MEDIA_PLAYBACK,POST_NOTIFICATIONS,WAKE_LOCK
+# Keep-alive service so USAGE_MEDIA OpenSL is not silenced when hardened.
+services = mediaplayback:./services/mediaplayback.py:foreground:foregroundServiceType=mediaPlayback
 # Keep local SDK/NDK; do not re-run sdkmanager updates every build.
 android.skip_update = True
 

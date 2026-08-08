@@ -5,7 +5,7 @@ from pythonforandroid.recipe import PyProjectRecipe
 
 
 class EventsysRecipe(PyProjectRecipe):
-    version = None
+    version = "0.0.38"
     name = "eventsys"
     depends = []
     call_hostpython_via_targetpython = False
