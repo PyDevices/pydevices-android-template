@@ -7,7 +7,7 @@ from pythonforandroid.recipe import PyProjectRecipe
 class MultimerRecipe(PyProjectRecipe):
     version = None
     name = "multimer"
-    depends = ["usdl2"]
+    depends = ["pydisplay-desktop"]
     call_hostpython_via_targetpython = False
 
 

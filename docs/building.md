@@ -2,7 +2,7 @@
 
 Prerequisites: [Android SDK + NDK](https://python-for-android.readthedocs.io/en/latest/quickstart.html), Ubuntu/WSL build tools (`git`, `zip`, `openjdk-17-jdk`, `autoconf`, …). Tooling already downloaded by buildozer lives under `~/.buildozer/android/platform/` by default.
 
-A practical workflow is to iterate on the app logic first, then only change the packaging layer when you need a new dependency or a different build setting. In most cases that means editing **`p4a_app/paint.py`** or **`p4a_app/main.py`** for behavior, **`p4a_app/board_config.py`** for display/input wiring, and **`p4a_app/buildozer.spec`** or **`p4a_recipes/`** when the APK’s runtime package list changes.
+A practical workflow is to iterate on the app logic first, then only change the packaging layer when you need a new dependency or a different build setting. In most cases that means editing **`p4a_app/paint.py`** or **`p4a_app/main.py`** for behavior (including `PYDISPLAY_*` size env), and **`p4a_app/buildozer.spec`** or **`p4a_recipes/`** when the APK’s runtime package list changes. Display wiring comes from TestPyPI **pydisplay-desktop** (`board_config` + pure-Python `usdl2`); do not add a local `board_config.py` that shadows it.
 
 ```bash
 ./build_android.sh              # prompts for launcher title (Enter = current)
@@ -95,7 +95,7 @@ Almost everything a user customizes for their APK lives under **`p4a_app/`**:
 | Customize | Where |
 |-----------|--------|
 | Entry / demo code | `p4a_app/main.py`, `paint.py` (or your module + the `import` in `main.py`) |
-| Display / window | `p4a_app/board_config.py` |
+| Display size / rotation / scale | `PYDISPLAY_*` env in `main.py` (or `board_config_tv.py` for TV) |
 | Title, package id, orientation, version, permissions, `requirements` | `p4a_app/buildozer.spec` |
 | Icon / presplash | `p4a_app/icon.png` (paths in the spec) |
 
