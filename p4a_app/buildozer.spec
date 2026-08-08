@@ -9,7 +9,7 @@ source.main = main.py
 icon.filename = %(source.dir)s/icon.png
 presplash.filename = %(source.dir)s/icon.png
 version = 0.5.0
-# Paint milestone: no LVGL. Native: pygraphics-cmod (via pygraphics recipe).
+# Paint milestone: no LVGL. Native: pygraphics (TestPyPI Android wheels).
 # pydisplay-desktop ships pure-Python usdl2.py + MCU-shaped board_config;
 # p4a sdl2 bootstrap provides libSDL2.so. displaysys includes SDLDisplay.
 requirements = python3,sdl2,pydisplay-desktop,displaysys,eventsys,pygraphics,multimer

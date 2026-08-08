@@ -13,7 +13,7 @@ Pages: [pydevices.github.io/pydisplay_android](https://pydevices.github.io/pydis
 | PyPI name | Import | Role |
 |-----------|--------|------|
 | [pydisplay-desktop](https://test.pypi.org/project/pydisplay-desktop/) | `board_config`, `usdl2`, … | Desktop/Android board bundle + pure-Python SDL2 binding |
-| [pygraphics-cmod](https://test.pypi.org/project/pygraphics-cmod/) | `pygraphics` | Native pygraphics (`pygraphics` recipe → `pygraphics-cmod`) |
+| [pygraphics](https://test.pypi.org/project/pygraphics/) | `pygraphics` | Native pygraphics (Android / desktop wheels) |
 | [displaysys](https://test.pypi.org/project/displaysys/) | `displaysys` | Display core + backends (`AutoDisplay`, `SDLDisplay`, …) |
 | [eventsys](https://test.pypi.org/project/eventsys/) | `eventsys` | Event runtime / input queue |
 | [multimer](https://test.pypi.org/project/multimer/) | `multimer` | Timers (`_sdl2` backend on Android) |
