@@ -14,7 +14,7 @@ Pages: [pydevices.github.io/pydisplay_android](https://pydevices.github.io/pydis
 |-----------|--------|------|
 | [pydisplay-desktop](https://test.pypi.org/project/pydisplay-desktop/) | `board_config`, `usdl2`, … | Desktop/Android board bundle + pure-Python SDL2 binding |
 | [pygraphics](https://test.pypi.org/project/pygraphics/) | `pygraphics` | Native pygraphics (Android / desktop wheels) |
-| [displaysys](https://test.pypi.org/project/displaysys/) | `displaysys` | Display core + backends (`AutoDisplay`, `SDLDisplay`, …) |
+| [displaydev](https://test.pypi.org/project/displaydev/) | `displaydev` | Display core + backends (`AutoDisplay`, `SDLDisplay`, …) |
 | [eventsys](https://test.pypi.org/project/eventsys/) | `eventsys` | Event runtime / input queue |
 | [multimer](https://test.pypi.org/project/multimer/) | `multimer` | Timers (`threading` on Android; not `sdl2`) |
 | [lvgl-cpython](https://test.pypi.org/project/lvgl-cpython/) | `lvgl` | LVGL native extension |
@@ -51,7 +51,7 @@ Package id: **`org.pydevices.launcher`** (launcher label: **PyDevices Launcher**
 `buildozer.spec` requirements:
 
 ```
-python3,sdl2,setuptools,pip,pydisplay-desktop,displaysys,eventsys,pygraphics,multimer,lvglcpython,palettes,pdwidgets
+python3,sdl2,setuptools,pip,pydisplay-desktop,displaydev,eventsys,pygraphics,multimer,lvglcpython,palettes,pdwidgets
 ```
 
 (`python3` unpinned — p4a pairs target/host Python; do not pin `python3==3.13`.)

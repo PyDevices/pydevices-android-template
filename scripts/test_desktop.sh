@@ -18,7 +18,7 @@ fi
 
 "$PIP" install -q \
   -i "$TESTPYPI" --extra-index-url "$PYPI" \
-  pydisplay-desktop displaysys eventsys pygraphics multimer
+  pydisplay-desktop displaydev eventsys pygraphics multimer
 
 cd "$APP"
 

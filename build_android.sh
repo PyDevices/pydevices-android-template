@@ -7,7 +7,7 @@
 # Options:
 #   -y, --yes, --no-prompt   Keep the current buildozer.spec title (no prompt)
 #   --title NAME             Set the launcher title (no prompt)
-#   --local-modules          Shadow TestPyPI with local displaysys/usdl2/audio
+#   --local-modules          Shadow TestPyPI with local displaydev/usdl2/audio
 #                            (same as ANDROID_DEBUG_LOCAL_MODULES=1)
 #   -h, --help               Show this help
 #
@@ -28,10 +28,10 @@
 #   JAVA_HOME           JDK for Android tooling (auto-detected from java on PATH when unset)
 #   ALLOW_CLEAN         Set to 1 to permit clean/distclean args (default: refuse)
 #   ANDROID_DEBUG_LOCAL_MODULES
-#                       Set to 1 to sync local displaysys/, usdl2.py, and
+#                       Set to 1 to sync local displaydev/, usdl2.py, and
 #                       Android audio modules into p4a_app/ (debug only).
 #                       Default (unset/0): remove those shadows so TestPyPI
-#                       displaysys + pydisplay-desktop wheels win.
+#                       displaydev + pydisplay-desktop wheels win.
 #
 # Runtime deps are installed from TestPyPI via p4a PyProjectRecipe wrappers in p4a_recipes/.
 # Before packaging, syncs sibling pydisplay/src/utils → p4a_app/utils (override with
@@ -57,7 +57,7 @@ usage() {
 NO_PROMPT=0
 APP_TITLE=""
 BUILDOZER_ARGS=()
-# 1 = sync local displaysys/usdl2/audio into p4a_app (debug). Default: TestPyPI only.
+# 1 = sync local displaydev/usdl2/audio into p4a_app (debug). Default: TestPyPI only.
 ANDROID_DEBUG_LOCAL_MODULES="${ANDROID_DEBUG_LOCAL_MODULES:-0}"
 
 while [[ $# -gt 0 ]]; do
@@ -229,7 +229,7 @@ clear_android_local_module_shadows() {
     # Remove app-root shadows so site-packages (TestPyPI) win.
     local path
     for path in \
-        "$APP_DIR/displaysys" \
+        "$APP_DIR/displaydev" \
         "$APP_DIR/usdl2.py" \
         "$APP_DIR/audiodev" \
         "$APP_DIR/androidaudio_session.py" \
@@ -264,23 +264,22 @@ sync_android_audio_modules() {
 }
 
 sync_android_display_modules() {
-    # Debug only: shadow TestPyPI displaysys / usdl2 (pydisplay-desktop).
-    local pydisp="${PYDISPLAY_ROOT:-$SCRIPT_DIR/../pydisplay}"
+    # Debug only: shadow TestPyPI displaydev / usdl2 (pydisplay-desktop).
     local hw="${MICROPYTHON_HARDWARE:-$SCRIPT_DIR/../micropython-hardware}"
-    local disp_src="$pydisp/src/lib/displaysys"
+    local disp_src="$hw/drivers/display/displaydev"
     local usdl2_src="$hw/drivers/usdl2.py"
     if [[ -d "$disp_src" ]]; then
-        echo "==> Syncing displaysys from $disp_src -> $APP_DIR/displaysys"
-        mkdir -p "$APP_DIR/displaysys"
+        echo "==> Syncing displaydev from $disp_src -> $APP_DIR/displaydev"
+        mkdir -p "$APP_DIR/displaydev"
         rsync -a --delete \
             --exclude '__pycache__/' \
             --exclude '*.md' \
             --delete-excluded \
-            "$disp_src/" "$APP_DIR/displaysys/"
-        require_file "$APP_DIR/displaysys/androidsdl.py" "synced displaysys/androidsdl.py"
-        require_file "$APP_DIR/displaysys/autodisplay.py" "synced displaysys/autodisplay.py"
+            "$disp_src/" "$APP_DIR/displaydev/"
+        require_file "$APP_DIR/displaydev/androidsdl.py" "synced displaydev/androidsdl.py"
+        require_file "$APP_DIR/displaydev/auto.py" "synced displaydev/auto.py"
     else
-        echo "==> Skipping displaysys sync (missing $disp_src)" >&2
+        echo "==> Skipping displaydev sync (missing $disp_src)" >&2
     fi
     if [[ -f "$usdl2_src" ]]; then
         echo "==> Syncing usdl2 from $usdl2_src -> $APP_DIR"
@@ -294,12 +293,12 @@ sync_android_display_modules() {
 maybe_sync_android_local_modules() {
     case "${ANDROID_DEBUG_LOCAL_MODULES}" in
         1|true|TRUE|yes|YES)
-            echo "==> ANDROID_DEBUG_LOCAL_MODULES=1: syncing local displaysys/usdl2/audio"
+            echo "==> ANDROID_DEBUG_LOCAL_MODULES=1: syncing local displaydev/usdl2/audio"
             sync_android_audio_modules
             sync_android_display_modules
             ;;
         *)
-            echo "==> Using TestPyPI displaysys + pydisplay-desktop (no local module shadows)"
+            echo "==> Using TestPyPI displaydev + pydisplay-desktop (no local module shadows)"
             clear_android_local_module_shadows
             ;;
     esac

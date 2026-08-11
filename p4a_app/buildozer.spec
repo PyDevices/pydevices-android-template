@@ -14,7 +14,7 @@ version = 0.5.0
 # Standalone LVGL launcher + baked TestPyPI stack. Native: pygraphics /
 # lvgl-cpython Android wheels. pydisplay-desktop ships usdl2 + board_config;
 # p4a sdl2 bootstrap provides libSDL2.so.
-requirements = python3,sdl2,setuptools,pip,pyjnius,pydisplay-desktop,displaysys,eventsys,pygraphics,multimer,lvglcpython,palettes,pdwidgets
+requirements = python3,sdl2,setuptools,pip,pyjnius,pydisplay-desktop,displaydev,eventsys,pygraphics,multimer,lvglcpython,palettes,pdwidgets
 # Both aspects allowed in the manifest; AndroidSDLDisplay then locks to fixed
 # LANDSCAPE or PORTRAIT from logical size (tilt does nothing).
 orientation = portrait,landscape
