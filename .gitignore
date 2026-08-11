@@ -20,6 +20,8 @@ p4a_app/bin/
 # Debug-only shadows from build_android.sh --local-modules / ANDROID_DEBUG_LOCAL_MODULES=1
 p4a_app/displaysys/
 p4a_app/usdl2.py
+p4a_app/audiodev/
+p4a_app/audiodev.py
 p4a_app/androidaudio_session.py
 p4a_app/sdl2audio.py
 

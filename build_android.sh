@@ -231,8 +231,10 @@ clear_android_local_module_shadows() {
     for path in \
         "$APP_DIR/displaysys" \
         "$APP_DIR/usdl2.py" \
+        "$APP_DIR/audiodev" \
         "$APP_DIR/androidaudio_session.py" \
-        "$APP_DIR/sdl2audio.py"
+        "$APP_DIR/sdl2audio.py" \
+        "$APP_DIR/audiodev.py"
     do
         if [[ -e "$path" || -L "$path" ]]; then
             echo "==> Removing local module shadow: $path"
@@ -244,16 +246,21 @@ clear_android_local_module_shadows() {
 sync_android_audio_modules() {
     # Debug only: shadow TestPyPI pydisplay-desktop audio modules.
     local hw="${MICROPYTHON_HARDWARE:-$SCRIPT_DIR/../micropython-hardware}"
-    local audio_src="$hw/drivers/audio"
-    if [[ ! -f "$audio_src/androidaudio_session.py" || ! -f "$audio_src/sdl2audio.py" ]]; then
+    local audio_src="$hw/drivers/audio/audiodev"
+    if [[ ! -f "$audio_src/__init__.py" || ! -f "$audio_src/sdl2_audio.py" ]]; then
         echo "==> Skipping Android audio sync (missing $audio_src)" >&2
         return 0
     fi
-    echo "==> Syncing Android audio modules from $audio_src -> $APP_DIR"
-    cp -f "$audio_src/androidaudio_session.py" "$APP_DIR/androidaudio_session.py"
-    cp -f "$audio_src/sdl2audio.py" "$APP_DIR/sdl2audio.py"
-    require_file "$APP_DIR/androidaudio_session.py" "synced androidaudio_session.py"
-    require_file "$APP_DIR/sdl2audio.py" "synced sdl2audio.py"
+    echo "==> Syncing Android audiodev package from $audio_src -> $APP_DIR/audiodev"
+    mkdir -p "$APP_DIR/audiodev"
+    rsync -a --delete \
+        --exclude '__pycache__/' \
+        --exclude '*.md' \
+        --delete-excluded \
+        "$audio_src/" "$APP_DIR/audiodev/"
+    require_file "$APP_DIR/audiodev/__init__.py" "synced audiodev/__init__.py"
+    require_file "$APP_DIR/audiodev/sdl2_audio.py" "synced audiodev/sdl2_audio.py"
+    require_file "$APP_DIR/audiodev/android_audio.py" "synced audiodev/android_audio.py"
 }
 
 sync_android_display_modules() {
