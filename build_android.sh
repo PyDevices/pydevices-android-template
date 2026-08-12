@@ -251,7 +251,7 @@ clear_android_local_module_shadows() {
 sync_android_audio_modules() {
     # Debug only: shadow TestPyPI pydevices-audiodev modules.
     local hw="${PYDEVICES_PRODUCT_ROOT:-$SCRIPT_DIR/../pydevices}"
-    local audio_src="$hw/drivers/audio/audiodev"
+    local audio_src="$hw/lib/audiodev"
     if [[ ! -f "$audio_src/__init__.py" || ! -f "$audio_src/sdl2_audio.py" ]]; then
         echo "==> Skipping Android audio sync (missing $audio_src)" >&2
         return 0
@@ -271,7 +271,7 @@ sync_android_audio_modules() {
 sync_android_display_modules() {
     # Debug only: shadow TestPyPI displaydev / usdl2 (pydevices-desktop).
     local hw="${PYDEVICES_PRODUCT_ROOT:-$SCRIPT_DIR/../pydevices}"
-    local disp_src="$hw/drivers/display/displaydev"
+    local disp_src="$hw/lib/displaydev"
     local usdl2_src="$hw/drivers/usdl2.py"
     if [[ -d "$disp_src" ]]; then
         echo "==> Syncing displaydev from $disp_src -> $APP_DIR/displaydev"
