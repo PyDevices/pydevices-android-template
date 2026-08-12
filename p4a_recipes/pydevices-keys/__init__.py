@@ -5,7 +5,7 @@ from pythonforandroid.recipe import PyProjectRecipe
 
 
 class PydevicesKeysRecipe(PyProjectRecipe):
-    version = "0.0.16"
+    version = "0.0.17"
     name = "pydevices-keys"
     depends = []
     call_hostpython_via_targetpython = False

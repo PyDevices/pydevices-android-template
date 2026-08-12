@@ -9,7 +9,7 @@ from pythonforandroid.recipe import PyProjectRecipe
 
 
 class DisplaydevRecipe(PyProjectRecipe):
-    version = "0.0.16"
+    version = "0.0.17"
     name = "pydevices-displaydev"
     depends = ["pydevices-events", "pydevices-keys"]
     call_hostpython_via_targetpython = False

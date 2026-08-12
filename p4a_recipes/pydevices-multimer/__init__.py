@@ -5,7 +5,7 @@ from pythonforandroid.recipe import PyProjectRecipe
 
 
 class MultimerRecipe(PyProjectRecipe):
-    version = "0.0.16"
+    version = "0.0.17"
     name = "pydevices-multimer"
     depends = []
     call_hostpython_via_targetpython = False
