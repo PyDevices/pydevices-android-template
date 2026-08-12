@@ -4,7 +4,7 @@
 # CLI shape matches unix micropython (-c / -m / file / -i / -X …).
 # Path resolution matches CLI python — NOT pyscript.sh gallery lookup.
 #
-# Usage (from e.g. pydevices-examples/src, with ~/bin on PATH):
+# Usage (from e.g. pydevices-examples/lib, with ~/bin on PATH):
 #   android.sh examples/lv_test_timer.py
 #   android.sh -c 'print(1+1)'
 #   android.sh -m lv_test_timer
@@ -26,7 +26,7 @@ _SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 ANDROID_ROOT="$(cd "$_SCRIPT_DIR/.." && pwd)"
 # Prefer sibling pydevices-examples next to this repo (examples, tools, packages).
 if [[ -z "${PYDEVICES_EXAMPLES_ROOT:-}" ]]; then
-  if [[ -d "$ANDROID_ROOT/../pydevices-examples/src" ]]; then
+  if [[ -d "$ANDROID_ROOT/../pydevices-examples/lib" ]]; then
     PYDEVICES_EXAMPLES_ROOT="$(cd "$ANDROID_ROOT/../pydevices-examples" && pwd)"
   else
     PYDEVICES_EXAMPLES_ROOT=""

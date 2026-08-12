@@ -59,7 +59,7 @@ python3,sdl2,setuptools,pip,pydevices-events,pydevices-keys,pydevices-multimer,p
 
 ## Stage examples from pydevices-examples
 
-From `pydevices-examples/src` (path relative to cwd), with `android.sh` on PATH:
+From `pydevices-examples/lib` (path relative to cwd), with `android.sh` on PATH:
 
 ```bash
 android.sh examples/lv_test_timer.py

@@ -33,7 +33,7 @@ BUTTONS = (
     {
         "label": "lv_test_timer",
         "kind": "mip",
-        "package": "github:PyDevices/pydevices-examples/src/examples/lv_test_timer.py",
+        "package": "github:PyDevices/pydevices-examples/lib/examples/lv_test_timer.py",
         "entry": "lv_test_timer",
     },
 )
