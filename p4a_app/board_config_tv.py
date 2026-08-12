@@ -2,7 +2,7 @@
 """Android TV / Fire OS framebuffer env for packaged ``board_config``.
 
 Import this from ``main.py`` *before* ``paint`` (which imports ``board_config``
-from pydisplay-desktop) so width/height match a landscape 10-foot UI:
+from pydevices-desktop) so width/height match a landscape 10-foot UI:
 
     import board_config_tv  # noqa: F401
     import paint

@@ -197,10 +197,10 @@ def build_ui():
 def start():
     """Cold-start entry used by ``main.py``."""
     global _started
-    from board_config import runtime
+    import display_driver
 
     _user_pkgs_dir()
     if not _started:
         build_ui()
         _started = True
-    runtime.run_forever()
+    display_driver.runtime.run_forever()

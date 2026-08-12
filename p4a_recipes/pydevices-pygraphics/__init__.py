@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: MIT
-"""python-for-android recipe: pygraphics (TestPyPI native Android wheel)."""
+"""python-for-android recipe: pydevices-pygraphics (import pygraphics)."""
 
 from pythonforandroid.recipe import PyProjectRecipe
 
 
 class PygraphicsRecipe(PyProjectRecipe):
     # Pin so hostpython pip does not reuse a stale wheel from cache.
-    version = "0.0.31"
-    name = "pygraphics"
+    version = "0.0.32"
+    name = "pydevices-pygraphics"
     depends = []
     call_hostpython_via_targetpython = False
 
@@ -15,7 +15,7 @@ class PygraphicsRecipe(PyProjectRecipe):
         # Upstream PyProjectRecipe only passes android_{ndk_api}_* tags. Our
         # cibuildwheel Android wheels are tagged android_21_* (PEP 738 baseline)
         # and remain valid for higher minSdk/ndk-api; include those tags so pip
-        # can resolve pygraphics==VERSION.
+        # can resolve pydevices-pygraphics==VERSION.
         opts = super().get_pip_install_args(arch)
         extra = []
         for opt in opts:

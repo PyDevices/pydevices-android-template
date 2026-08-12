@@ -2,7 +2,7 @@
 
 Android APK template for [pydisplay](https://github.com/PyDevices/pydisplay): **python-for-android** recipes and a **buildozer** app (`p4a_app/`) others can clone and replace with their own code.
 
-On Android there is no MicroPython port; pydisplay runs under **CPython** in a **python-for-android** APK with the **SDL2 bootstrap** (no Kivy). Runtime packages install from **[TestPyPI](https://test.pypi.org/)** as CPython wheels, not from local git checkouts. Pure-Python `usdl2` and the MCU-shaped `board_config` come from **pydisplay-desktop**; p4a’s `sdl2` recipe supplies `libSDL2.so`.
+On Android there is no MicroPython port; pydisplay runs under **CPython** in a **python-for-android** APK with the **SDL2 bootstrap** (no Kivy). Runtime packages install from **[TestPyPI](https://test.pypi.org/)** as CPython wheels, not from local git checkouts. Pure-Python `usdl2` and the MCU-shaped `board_config` come from **pydevices-desktop**; p4a’s `sdl2` recipe supplies `libSDL2.so`.
 
 The default APK is **PyDevices Launcher** (`org.pydevices.launcher`): a baked LVGL home screen. Buttons fetch apps on demand (`mip` from GitHub + PyDevices MIP index, or `pip` with TestPyPI primary / PyPI secondary). Cold start never auto-fetches. Stage host files over adb with **`scripts/android.sh`** (cwd path, like CLI Python — not PyScript gallery lookup; symlink from `~/bin/android.sh` keeps it on PATH).
 
@@ -12,16 +12,17 @@ Pages: [pydevices.github.io/pydisplay_android](https://pydevices.github.io/pydis
 
 | PyPI name | Import | Role |
 |-----------|--------|------|
-| [pydisplay-desktop](https://test.pypi.org/project/pydisplay-desktop/) | `board_config`, `usdl2`, … | Desktop/Android board bundle + pure-Python SDL2 binding |
-| [pygraphics](https://test.pypi.org/project/pygraphics/) | `pygraphics` | Native pygraphics (Android / desktop wheels) |
-| [displaydev](https://test.pypi.org/project/displaydev/) | `displaydev` | Display core + backends (`AutoDisplay`, `SDLDisplay`, …) |
-| [eventsys](https://test.pypi.org/project/eventsys/) | `eventsys` | Event runtime / input queue |
-| [multimer](https://test.pypi.org/project/multimer/) | `multimer` | Timers (`threading` on Android; not `sdl2`) |
+| [pydevices-desktop](https://test.pypi.org/project/pydevices-desktop/) | `board_config`, `usdl2`, … | Desktop/Android board bundle + pure-Python SDL2 binding |
+| [pydevices-pygraphics](https://test.pypi.org/project/pydevices-pygraphics/) | `pygraphics` | Native pygraphics (Android / desktop wheels) |
+| [pydevices-displaydev](https://test.pypi.org/project/pydevices-displaydev/) | `displaydev` | Display core + backends (`AutoDisplay`, `SDLDisplay`, …) |
+| [pydevices-audiodev](https://test.pypi.org/project/pydevices-audiodev/) | `audiodev` | Portable PCM audio API and Android SDL backend |
+| [pydevices-eventsys](https://test.pypi.org/project/pydevices-eventsys/) | `eventsys` | Optional event runtime / input queue for non-LVGL apps |
+| [pydevices-multimer](https://test.pypi.org/project/pydevices-multimer/) | `multimer` | Timers (`threading` on Android; not `sdl2`) |
 | [pydevices-lvgl](https://test.pypi.org/project/pydevices-lvgl/) | `lvgl` | LVGL native extension |
-| [palettes](https://test.pypi.org/project/palettes/) | `palettes` | Color palettes |
-| [pdwidgets](https://test.pypi.org/project/pdwidgets/) | `pdwidgets` | Widgets |
+| [pydevices-palettes](https://test.pypi.org/project/pydevices-palettes/) | `palettes` | Color palettes |
+| [pydevices-pdwidgets](https://test.pypi.org/project/pydevices-pdwidgets/) | `pdwidgets` | Widgets |
 
-Recipes leave versions unpinned so pip takes the latest matching wheel. Pin with `version = "…"` in a recipe when you need a frozen APK.
+Recipes pin the coordinated release versions so repeat Android builds are reproducible.
 
 
 ## 🚀 Build APK
@@ -51,7 +52,7 @@ Package id: **`org.pydevices.launcher`** (launcher label: **PyDevices Launcher**
 `buildozer.spec` requirements:
 
 ```
-python3,sdl2,setuptools,pip,pydisplay-desktop,displaydev,eventsys,pygraphics,multimer,pydeviceslvgl,palettes,pdwidgets
+python3,sdl2,setuptools,pip,pydevices-events,pydevices-keys,pydevices-multimer,pydevices-displaydev,pydevices-audiodev,pydevices-eventsys,pydevices-pygraphics,pydevices-palettes,pydevices-pdwidgets,pydevices-desktop,pydeviceslvgl
 ```
 
 (`python3` unpinned — p4a pairs target/host Python; do not pin `python3==3.13`.)

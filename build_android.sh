@@ -31,11 +31,12 @@
 #                       Set to 1 to sync local displaydev/, usdl2.py, and
 #                       Android audio modules into p4a_app/ (debug only).
 #                       Default (unset/0): remove those shadows so TestPyPI
-#                       displaydev + pydisplay-desktop wheels win.
+#                       pydevices-displaydev + pydevices-desktop wheels win.
 #
 # Runtime deps are installed from TestPyPI via p4a PyProjectRecipe wrappers in p4a_recipes/.
-# Before packaging, syncs sibling pydisplay/src/utils → p4a_app/utils (override with
-# PYDISPLAY_UTILS). Excludes spotapi symlink, __pycache__, *.md, *.sh.
+# Before packaging, syncs sibling pydisplay/src/utils → p4a_app/utils and overlays
+# canonical micropython-hardware/utils/mip.py (override with PYDISPLAY_UTILS and
+# MICROPYTHON_HARDWARE). Excludes spotapi symlink, __pycache__, *.md, *.sh.
 set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
@@ -202,8 +203,9 @@ setup_android_env() {
 }
 
 sync_utils_from_pydisplay() {
-    # Bake the full pydisplay utils tree (tft_config, fonts, …) — not only path/mip.
+    # Bake pydisplay's app helpers, then overlay the portable product-owned mip.
     local src="${PYDISPLAY_UTILS:-$SCRIPT_DIR/../pydisplay/src/utils}"
+    local hw="${MICROPYTHON_HARDWARE:-$SCRIPT_DIR/../micropython-hardware}"
     local dst="$APP_DIR/utils"
     if [[ ! -d "$src" ]]; then
         echo "==> Skipping utils sync (missing $src); using existing $dst" >&2
@@ -223,6 +225,9 @@ sync_utils_from_pydisplay() {
     require_file "$dst/path.py" "synced utils/path.py"
     require_file "$dst/tft_config.py" "synced utils/tft_config.py"
     require_dir "$dst/fonts" "synced utils/fonts"
+    require_file "$hw/utils/mip.py" "micropython-hardware utils/mip.py"
+    rsync -a "$hw/utils/mip.py" "$dst/mip.py"
+    require_file "$dst/mip.py" "synced utils/mip.py"
 }
 
 clear_android_local_module_shadows() {
@@ -244,7 +249,7 @@ clear_android_local_module_shadows() {
 }
 
 sync_android_audio_modules() {
-    # Debug only: shadow TestPyPI pydisplay-desktop audio modules.
+    # Debug only: shadow TestPyPI pydevices-audiodev modules.
     local hw="${MICROPYTHON_HARDWARE:-$SCRIPT_DIR/../micropython-hardware}"
     local audio_src="$hw/drivers/audio/audiodev"
     if [[ ! -f "$audio_src/__init__.py" || ! -f "$audio_src/sdl2_audio.py" ]]; then
@@ -264,7 +269,7 @@ sync_android_audio_modules() {
 }
 
 sync_android_display_modules() {
-    # Debug only: shadow TestPyPI displaydev / usdl2 (pydisplay-desktop).
+    # Debug only: shadow TestPyPI displaydev / usdl2 (pydevices-desktop).
     local hw="${MICROPYTHON_HARDWARE:-$SCRIPT_DIR/../micropython-hardware}"
     local disp_src="$hw/drivers/display/displaydev"
     local usdl2_src="$hw/drivers/usdl2.py"
@@ -298,7 +303,7 @@ maybe_sync_android_local_modules() {
             sync_android_display_modules
             ;;
         *)
-            echo "==> Using TestPyPI displaydev + pydisplay-desktop (no local module shadows)"
+            echo "==> Using TestPyPI pydevices-displaydev + pydevices-desktop (no local module shadows)"
             clear_android_local_module_shadows
             ;;
     esac

@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: MIT
-"""python-for-android recipe: multimer (TestPyPI pure-Python wheel)."""
+"""python-for-android recipe: pydevices-multimer (import multimer)."""
 
 from pythonforandroid.recipe import PyProjectRecipe
 
 
 class MultimerRecipe(PyProjectRecipe):
-    version = "0.0.39"
-    name = "multimer"
-    depends = ["pydisplay-desktop"]
+    version = "0.0.16"
+    name = "pydevices-multimer"
+    depends = []
     call_hostpython_via_targetpython = False
 
 

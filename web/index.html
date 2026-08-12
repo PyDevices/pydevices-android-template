@@ -57,21 +57,18 @@ cd pydisplay_android
     <div class="snippet-grid">
       <div class="snippet-card">
         <h3>board_config</h3>
-        <p>SDLDisplay + eventsys.Runtime — from <code>p4a_app/board_config.py</code>.</p>
-        <pre><code>from displaydev.sdldisplay import SDLDisplay as DTDisplay, get_events
+        <p><code>pydevices-desktop</code> supplies neutral display and input endpoints; an application opts into a traffic controller when needed.</p>
+        <pre><code>import board_config
 import eventsys
 
-display_drv = DTDisplay(
-    width=720, height=1280,
-    rotation=0, title=..., scale=1.0,
-    window_flags=...,
-)
-runtime = eventsys.Runtime(display=display_drv, host_read=get_events)</code></pre>
+display_drv = board_config.display_drv
+runtime = eventsys.Runtime.from_board_config(board_config)</code></pre>
       </div>
       <div class="snippet-card">
         <h3>paint handlers</h3>
         <p>From <code>p4a_app/paint.py</code> — register events, then run forever.</p>
-        <pre><code>from board_config import display_drv, runtime
+        <pre><code>from board_config import display_drv
+from app_runtime import runtime
 
 runtime.on(runtime.events.MOUSEBUTTONDOWN, handler)
 runtime.on(runtime.events.MOUSEMOTION, on_motion)
@@ -115,7 +112,7 @@ runtime.run_forever()</code></pre>
       <div class="card">
         <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 5v10l-9 5-9-5V7z"/></svg></span>
         <h3><code>p4a_recipes/</code></h3>
-        <p>Recipes for <code>usdl2</code>, <code>graphics</code>, <code>displaydev</code>, <code>eventsys</code>, <code>multimer</code>, and optional <code>pydeviceslvgl</code> — versions left unpinned so pip takes the latest matching TestPyPI wheel.</p>
+        <p>Namespaced recipes for the <code>pydevices-*</code> TestPyPI distributions, plus <code>pydeviceslvgl</code> for the native <code>pydevices-lvgl</code> wheel. Core package versions are pinned; the LVGL recipe selects a compatible native wheel.</p>
       </div>
     </div>
 
