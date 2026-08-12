@@ -7,7 +7,7 @@
 #
 # Environment:
 #   ANDROID_HOME          Android SDK (default: ~/.buildozer/android/platform/android-sdk)
-#   PYDISPLAY_ANDROID_DIR Repo root (auto-detected)
+#   PYDEVICES_ANDROID_DIR Repo root (auto-detected)
 #   ADB                   Override adb executable (auto-detected on WSL vs Linux)
 #   PACKAGE_ID            App id (default: org.pydevices.launcher)
 #   ACTIVITY              Main activity (default: org.kivy.android.PythonActivity)
@@ -109,11 +109,11 @@ Set up an AVD on Linux/macOS like this:
          "system-images;android-34;google_apis;x86_64"
 
   4. Create an AVD (pick any unused name):
-       avdmanager create avd -n pydisplay_api34 -k \\
+       avdmanager create avd -n pydevices_examples_api34 -k \\
          "system-images;android-34;google_apis;x86_64" -d pixel_6
 
   5. Start the emulator:
-       emulator -avd pydisplay_api34 &
+       emulator -avd pydevices_examples_api34 &
 
   6. Wait for boot, then confirm:
        adb devices

@@ -1,12 +1,12 @@
-# pydisplay_android
+# pydevices-android-template
 
-Android APK template for [pydisplay](https://github.com/PyDevices/pydisplay): **python-for-android** recipes and a **buildozer** app (`p4a_app/`) others can clone and replace with their own code.
+Android APK template for the [PyDevices](https://github.com/PyDevices/pydevices) product stack: **python-for-android** recipes and a **Buildozer** app (`p4a_app/`) others can clone and replace with their own code. Complete apps to adapt live in [pydevices-examples](https://github.com/PyDevices/pydevices-examples).
 
-On Android there is no MicroPython port; pydisplay runs under **CPython** in a **python-for-android** APK with the **SDL2 bootstrap** (no Kivy). Runtime packages install from **[TestPyPI](https://test.pypi.org/)** as CPython wheels, not from local git checkouts. Pure-Python `usdl2` and the MCU-shaped `board_config` come from **pydevices-desktop**; p4a’s `sdl2` recipe supplies `libSDL2.so`.
+On Android there is no MicroPython port; PyDevices applications run under **CPython** in a **python-for-android** APK with the **SDL2 bootstrap** (no Kivy). Runtime packages install from **[TestPyPI](https://test.pypi.org/)** as CPython wheels, not from local git checkouts. Pure-Python `usdl2` and the MCU-shaped `board_config` come from **pydevices-desktop**; p4a’s `sdl2` recipe supplies `libSDL2.so`.
 
 The default APK is **PyDevices Launcher** (`org.pydevices.launcher`): a baked LVGL home screen. Buttons fetch apps on demand (`mip` from GitHub + PyDevices MIP index, or `pip` with TestPyPI primary / PyPI secondary). Cold start never auto-fetches. Stage host files over adb with **`scripts/android.sh`** (cwd path, like CLI Python — not PyScript gallery lookup; symlink from `~/bin/android.sh` keeps it on PATH).
 
-Pages: [pydevices.github.io/pydisplay_android](https://pydevices.github.io/pydisplay_android/)
+Pages: [pydevices.github.io/pydevices-android-template](https://pydevices.github.io/pydevices-android-template/)
 
 ## TestPyPI packages
 
@@ -46,7 +46,7 @@ Package id: **`org.pydevices.launcher`** (launcher label: **PyDevices Launcher**
 | `p4a_app/paint.py` | Touch-paint demo (stage via `android.sh`, not cold-start default) |
 | `p4a_app/stdio_sidecar.py` | Localhost stdio bridge for `android.sh` TTY attach / `-i` REPL |
 | `p4a_app/board_config_tv.py` | Optional: set landscape TV env before entry |
-| `p4a_app/utils/` | Full pydisplay `src/utils/` tree (`path`, `mip`, `tft_config`, `fonts`, …); synced from sibling pydisplay by `build_android.sh` |
+| `p4a_app/utils/` | Full pydevices-examples `src/utils/` tree (`path`, `mip`, `tft_config`, `fonts`, …); synced from sibling pydevices-examples by `build_android.sh` |
 | `p4a_app/icon.png` | Launcher icon + presplash |
 
 `buildozer.spec` requirements:
@@ -57,9 +57,9 @@ python3,sdl2,setuptools,pip,pydevices-events,pydevices-keys,pydevices-multimer,p
 
 (`python3` unpinned — p4a pairs target/host Python; do not pin `python3==3.13`.)
 
-## Stage examples from pydisplay
+## Stage examples from pydevices-examples
 
-From `pydisplay/src` (path relative to cwd), with `android.sh` on PATH:
+From `pydevices-examples/src` (path relative to cwd), with `android.sh` on PATH:
 
 ```bash
 android.sh examples/lv_test_timer.py
@@ -70,7 +70,7 @@ android.sh --logcat
 android.sh --no-attach …    # launch only (no TTY stdio attach)
 ```
 
-Or call `../pydisplay_android/scripts/android.sh` / this repo’s `./scripts/android.sh` directly. Matrix opt-in: `pydisplay/tools/example_test_kit.py --only-runtime android …`.
+Or call `../pydevices-android-template/scripts/android.sh` / this repo’s `./scripts/android.sh` directly. Matrix opt-in: `pydevices-examples/tools/example_test_kit.py --only-runtime android …`.
 
 ## Layout
 

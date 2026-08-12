@@ -26,14 +26,14 @@ BUTTONS = (
     {
         "label": "Update launcher",
         "kind": "mip",
-        "package": "github:PyDevices/pydisplay_android/p4a_app/launcher.py",
+        "package": "github:PyDevices/pydevices-android-template/p4a_app/launcher.py",
         "entry": "launcher",
         "reenter": True,
     },
     {
         "label": "lv_test_timer",
         "kind": "mip",
-        "package": "github:PyDevices/pydisplay/src/examples/lv_test_timer.py",
+        "package": "github:PyDevices/pydevices-examples/src/examples/lv_test_timer.py",
         "entry": "lv_test_timer",
     },
 )

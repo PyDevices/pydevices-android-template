@@ -24,13 +24,13 @@ Install the APK on a connected Android TV / Fire TV emulator and launch it.
 Create a TV AVD (example, API 34 x86_64):
 
   sdkmanager "system-images;android-34;android-tv;x86_64"
-  avdmanager create avd -n pydisplay_tv_api34 -k \
+  avdmanager create avd -n pydevices_examples_tv_api34 -k \
     "system-images;android-34;android-tv;x86_64" -d "tv_1080p"
-  emulator -avd pydisplay_tv_api34 &
+  emulator -avd pydevices_examples_tv_api34 &
 
 Then re-run this script. Leanback intent is in p4a_app/intent_filters_tv.xml.
 For a landscape 10-foot framebuffer, import board_config_tv in main.py before
-paint (sets PYDISPLAY_WIDTH/HEIGHT), then rebuild.
+paint (sets PYDEVICES_WIDTH/HEIGHT), then rebuild.
 EOF
   exit 0
 fi

@@ -406,7 +406,7 @@ class _SocketBridge:
 
 
 def _port():
-    raw = os.environ.get("PYDISPLAY_ANDROID_REPL_PORT", "").strip()
+    raw = os.environ.get("PYDEVICES_ANDROID_REPL_PORT", "").strip()
     if raw.isdigit():
         return int(raw)
     return DEFAULT_PORT

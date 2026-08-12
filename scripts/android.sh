@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Stage a host .py (cwd path) onto the PyDevices Android launcher via adb and
-# relaunch. Lives in pydisplay_android/scripts/ (symlink from ~/bin/android.sh).
+# relaunch. Lives in pydevices-android-template/scripts/ (symlink from ~/bin/android.sh).
 # CLI shape matches unix micropython (-c / -m / file / -i / -X …).
 # Path resolution matches CLI python — NOT pyscript.sh gallery lookup.
 #
-# Usage (from e.g. pydisplay/src, with ~/bin on PATH):
+# Usage (from e.g. pydevices-examples/src, with ~/bin on PATH):
 #   android.sh examples/lv_test_timer.py
 #   android.sh -c 'print(1+1)'
 #   android.sh -m lv_test_timer
@@ -18,18 +18,18 @@
 #   PACKAGE_ID            Default org.pydevices.launcher
 #   ACTIVITY              Default org.kivy.android.PythonActivity
 #   ANDROID_STDIO_PORT    Default 18765 (must match app stdio_sidecar)
-#   PYDISPLAY_ROOT        Sibling pydisplay checkout (examples / tools)
+#   PYDEVICES_EXAMPLES_ROOT        Sibling pydevices-examples checkout (examples / tools)
 set -euo pipefail
 
 _SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
-# scripts/ → pydisplay_android/
+# scripts/ → pydevices-android-template/
 ANDROID_ROOT="$(cd "$_SCRIPT_DIR/.." && pwd)"
-# Prefer sibling pydisplay next to this repo (examples, tools, packages).
-if [[ -z "${PYDISPLAY_ROOT:-}" ]]; then
-  if [[ -d "$ANDROID_ROOT/../pydisplay/src" ]]; then
-    PYDISPLAY_ROOT="$(cd "$ANDROID_ROOT/../pydisplay" && pwd)"
+# Prefer sibling pydevices-examples next to this repo (examples, tools, packages).
+if [[ -z "${PYDEVICES_EXAMPLES_ROOT:-}" ]]; then
+  if [[ -d "$ANDROID_ROOT/../pydevices-examples/src" ]]; then
+    PYDEVICES_EXAMPLES_ROOT="$(cd "$ANDROID_ROOT/../pydevices-examples" && pwd)"
   else
-    PYDISPLAY_ROOT=""
+    PYDEVICES_EXAMPLES_ROOT=""
   fi
 fi
 
@@ -70,7 +70,7 @@ Implementation specific options (-X):
   emit={bytecode,native,viper} -- accepted (no-op on Android CPython)
   heapsize=<n>[w][K|M]         -- accepted (no-op on Android CPython)
 
-Android / pydisplay extras:
+Android / pydevices-examples extras:
   --repl            same as -i
   --no-attach       launch only; do not wire this terminal to app stdio
   --clear           restore packaged launcher main.py; clear run/
@@ -85,8 +85,8 @@ When stdin is a TTY, stays attached (app stdin/stdout/stderr in this terminal).
 Ctrl-\\\\ disconnects attach. Path resolution matches CLI python — not pyscript gallery.
 
 Environment:
-  ADB  ANDROID_SERIAL  PACKAGE_ID  ACTIVITY  PYDISPLAY_ROOT  ANDROID_STDIO_PORT
-  (PYDISPLAY_ROOT defaults to sibling ../pydisplay from this repo)
+  ADB  ANDROID_SERIAL  PACKAGE_ID  ACTIVITY  PYDEVICES_EXAMPLES_ROOT  ANDROID_STDIO_PORT
+  (PYDEVICES_EXAMPLES_ROOT defaults to sibling ../pydevices-examples from this repo)
 EOF
 }
 
@@ -180,7 +180,7 @@ stage_file() {
   local dest_rel=$2
   local base
   base="$(basename "$host_path")"
-  local tmp="/data/local/tmp/pydisplay-android-$base"
+  local tmp="/data/local/tmp/pydevices-examples-android-$base"
   adb_cmd push "$host_path" "$tmp" >/dev/null
   adb_cmd shell "run-as $PACKAGE_ID sh -c 'mkdir -p files/app/$(dirname "$dest_rel"); cp $tmp files/app/$dest_rel'"
 }
@@ -321,16 +321,16 @@ stage_optional_csv() {
     [[ -n "$name" ]] || continue
     case "$kind" in
       modules)
-        if [[ -f "$PYDISPLAY_ROOT/src/examples/${name}.py" ]]; then
-          stage_file "$PYDISPLAY_ROOT/src/examples/${name}.py" "run/${name}.py"
+        if [[ -f "$PYDEVICES_EXAMPLES_ROOT/src/examples/${name}.py" ]]; then
+          stage_file "$PYDEVICES_EXAMPLES_ROOT/src/examples/${name}.py" "run/${name}.py"
           echo "android.sh: staged module $name"
         else
           echo "android.sh: warning: module not found: $name" >&2
         fi
         ;;
       manifests)
-        if [[ -f "$PYDISPLAY_ROOT/packages/${name}.json" ]]; then
-          stage_file "$PYDISPLAY_ROOT/packages/${name}.json" "run/${name}.json"
+        if [[ -f "$PYDEVICES_EXAMPLES_ROOT/packages/${name}.json" ]]; then
+          stage_file "$PYDEVICES_EXAMPLES_ROOT/packages/${name}.json" "run/${name}.json"
           echo "android.sh: staged manifest $name"
         else
           echo "android.sh: warning: manifest not found: $name" >&2
@@ -577,7 +577,7 @@ elif [[ -n "$FILE_ARG" ]]; then
   # Stage sibling .py modules plus co-located assets (bmp/pbm/bin/…) and an
   # optional assets/ subdirectory (e.g. tower_climb/assets/*.bmp).
   ENTRY_DIR="$(dirname "$RESOLVED")"
-  EXAMPLES_ROOT="$PYDISPLAY_ROOT/src/examples"
+  EXAMPLES_ROOT="$PYDEVICES_EXAMPLES_ROOT/src/examples"
   if [[ -d "$ENTRY_DIR" && "$ENTRY_DIR" != "$EXAMPLES_ROOT" && "$ENTRY_DIR" == "$EXAMPLES_ROOT"/* ]]; then
     for sibling in "$ENTRY_DIR"/*; do
       [[ -f "$sibling" ]] || continue
@@ -668,8 +668,8 @@ echo "android.sh: main.py -> import ${ENTRY_NAME}"
 if [[ "$KIT" -eq 1 ]]; then
   write_app_file "run_argv" "kit"
   # lv_test_timer kit imports quit_inject from tools/; stage beside the entry.
-  if [[ -f "$PYDISPLAY_ROOT/tools/quit_inject.py" ]]; then
-    stage_file "$PYDISPLAY_ROOT/tools/quit_inject.py" "run/quit_inject.py"
+  if [[ -f "$PYDEVICES_EXAMPLES_ROOT/tools/quit_inject.py" ]]; then
+    stage_file "$PYDEVICES_EXAMPLES_ROOT/tools/quit_inject.py" "run/quit_inject.py"
     echo "android.sh: staged quit_inject.py for kit mode"
   fi
 else

@@ -34,9 +34,9 @@
 #                       pydevices-displaydev + pydevices-desktop wheels win.
 #
 # Runtime deps are installed from TestPyPI via p4a PyProjectRecipe wrappers in p4a_recipes/.
-# Before packaging, syncs sibling pydisplay/src/utils → p4a_app/utils and overlays
-# canonical micropython-hardware/utils/mip.py (override with PYDISPLAY_UTILS and
-# MICROPYTHON_HARDWARE). Excludes spotapi symlink, __pycache__, *.md, *.sh.
+# Before packaging, syncs sibling pydevices-examples/src/utils → p4a_app/utils and overlays
+# canonical pydevices/utils/mip.py (override with PYDEVICES_EXAMPLES_UTILS and
+# PYDEVICES_PRODUCT_ROOT). Excludes spotapi symlink, __pycache__, *.md, *.sh.
 set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
@@ -202,10 +202,10 @@ setup_android_env() {
     export PATH="$VENV_DIR/bin:$PATH"
 }
 
-sync_utils_from_pydisplay() {
-    # Bake pydisplay's app helpers, then overlay the portable product-owned mip.
-    local src="${PYDISPLAY_UTILS:-$SCRIPT_DIR/../pydisplay/src/utils}"
-    local hw="${MICROPYTHON_HARDWARE:-$SCRIPT_DIR/../micropython-hardware}"
+sync_utils_from_examples() {
+    # Bake pydevices-examples's app helpers, then overlay the portable product-owned mip.
+    local src="${PYDEVICES_EXAMPLES_UTILS:-$SCRIPT_DIR/../pydevices-examples/src/utils}"
+    local hw="${PYDEVICES_PRODUCT_ROOT:-$SCRIPT_DIR/../pydevices}"
     local dst="$APP_DIR/utils"
     if [[ ! -d "$src" ]]; then
         echo "==> Skipping utils sync (missing $src); using existing $dst" >&2
@@ -225,7 +225,7 @@ sync_utils_from_pydisplay() {
     require_file "$dst/path.py" "synced utils/path.py"
     require_file "$dst/tft_config.py" "synced utils/tft_config.py"
     require_dir "$dst/fonts" "synced utils/fonts"
-    require_file "$hw/utils/mip.py" "micropython-hardware utils/mip.py"
+    require_file "$hw/utils/mip.py" "pydevices utils/mip.py"
     rsync -a "$hw/utils/mip.py" "$dst/mip.py"
     require_file "$dst/mip.py" "synced utils/mip.py"
 }
@@ -250,7 +250,7 @@ clear_android_local_module_shadows() {
 
 sync_android_audio_modules() {
     # Debug only: shadow TestPyPI pydevices-audiodev modules.
-    local hw="${MICROPYTHON_HARDWARE:-$SCRIPT_DIR/../micropython-hardware}"
+    local hw="${PYDEVICES_PRODUCT_ROOT:-$SCRIPT_DIR/../pydevices}"
     local audio_src="$hw/drivers/audio/audiodev"
     if [[ ! -f "$audio_src/__init__.py" || ! -f "$audio_src/sdl2_audio.py" ]]; then
         echo "==> Skipping Android audio sync (missing $audio_src)" >&2
@@ -270,7 +270,7 @@ sync_android_audio_modules() {
 
 sync_android_display_modules() {
     # Debug only: shadow TestPyPI displaydev / usdl2 (pydevices-desktop).
-    local hw="${MICROPYTHON_HARDWARE:-$SCRIPT_DIR/../micropython-hardware}"
+    local hw="${PYDEVICES_PRODUCT_ROOT:-$SCRIPT_DIR/../pydevices}"
     local disp_src="$hw/drivers/display/displaydev"
     local usdl2_src="$hw/drivers/usdl2.py"
     if [[ -d "$disp_src" ]]; then
@@ -318,7 +318,7 @@ require_file "$APP_DIR/boot.py" "p4a_app/boot.py"
 require_file "$APP_DIR/main.py" "p4a_app/main.py"
 require_file "$APP_DIR/paint.py" "p4a_app/paint.py"
 require_file "$SPEC" "p4a_app/buildozer.spec"
-sync_utils_from_pydisplay
+sync_utils_from_examples
 maybe_sync_android_local_modules
 
 resolve_app_title() {
