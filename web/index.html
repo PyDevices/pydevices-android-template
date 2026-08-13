@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <script>try{if(localStorage.getItem('pydevices-theme')==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>pydevices-android-template — PyDevices</title>
-  <meta name="description" content="Package PyDevices applications for Android with python-for-android recipes, an SDL runtime, and Buildozer.">
+  <title>pydevices-android-template — Buildozer APK Template for Android</title>
+  <meta name="description" content="Package PyDevices applications into native Android APKs with python-for-android recipes, SDL2 backends, and Buildozer.">
   <link rel="icon" type="image/svg+xml" href="https://pydevices.github.io/assets/img/logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
-  <link rel="stylesheet" href="https://pydevices.github.io/assets/css/site.css">
+  <link rel="stylesheet" href="./vendor/pydevices-chrome/site.css">
 </head>
 <body>
   <div id="pydevices-site-header"></div>
@@ -18,115 +18,45 @@
   <section class="hero wrap">
     <div class="hero-lead">
       <div class="hero-brand">
-        <div class="logo-badge product-mark"><img src="img/product.svg" alt="pydevices-android-template" width="112" height="112"></div>
-        <span class="eyebrow">PyDevices / pydevices-android-template</span>
+        <div class="logo-badge product-mark" style="background: linear-gradient(135deg, var(--tier-4-purple), #7c3aed);"><img src="img/product.svg" alt="pydevices-android-template" width="112" height="112"></div>
+        <span class="eyebrow">pydevices-android-template</span>
       </div>
-      <h1>A reusable Android template for PyDevices apps.</h1>
+      <h1>pydevices-android-template — Buildozer APK generator template.</h1>
     </div>
-    <p><code>pydevices-android-template</code> packages a PyDevices app for a phone: python-for-android recipes, a Buildozer-driven sample under <code>p4a_app/</code> you can replace, and a smoke path that keeps the mobile build honest. On Android there is no MicroPython port — the APK runs <strong>CPython</strong> with the SDL2 bootstrap, pulling wheels from TestPyPI.</p>
-    <p>This is not the browser gallery — for in-browser demos see the <a href="https://pydevices.github.io/pydevices-examples/pyscript/">PyScript Gallery</a>. This repo produces a real APK you install on a phone or emulator.</p>
+    <p><code>pydevices-android-template</code> packages PyDevices applications into installable, standalone Android APKs. It provides python-for-android (p4a) recipes, an SDL2 windowing bootstrap, and Buildozer configuration scripts to run CPython applications directly on mobile hardware or Android emulators.</p>
     <div class="cta">
-      <a class="btn primary" href="https://github.com/PyDevices/pydevices-android-template">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 0 0-1-2.6c3-.3 6-1.5 6-6.5a5 5 0 0 0-1.4-3.5 4.6 4.6 0 0 0-.1-3.5s-1.1-.3-3.5 1.3a12 12 0 0 0-6 0C6.6 1.7 5.5 2 5.5 2a4.6 4.6 0 0 0-.1 3.5A5 5 0 0 0 4 9c0 5 3 6.2 6 6.5a3.4 3.4 0 0 0-1 2.6V22"/></svg>
-        Source on GitHub
+      <a class="btn primary" style="background: #24292e; color: #fff; border-color: #24292e;" href="https://github.com/PyDevices/pydevices-android-template">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 0 0-1-2.6c3-.3 6-1.5 6-6.5a5 5 0 0 0-1.4-3.5 4.6 4.6 0 0 0-.1-3.5s-1.1-.3-3.5 1.3a12 12 0 0 0-6 0C6.6 1.7 5.5 2 5.5 2a4.6 4.6 0 0 0-.1 3.5A5 5 0 0 0 4 9c0 5 3 6.2 6 6.5a3.4 3.4 0 0 0-1 2.6V22"/></svg>
+        GitHub Repo
       </a>
+      <a class="btn" style="border-color: var(--tier-4-purple); color: var(--tier-4-purple);" href="https://github.com/PyDevices/pydevices-android-template/tree/main/p4a_app">Buildozer Recipe</a>
+      <a class="btn" style="border-color: var(--tier-4-purple); color: var(--tier-4-purple);" href="https://pydevices.github.io/pydevices-examples/pyscript/">PyScript Demos</a>
+      <a class="btn" style="border-color: var(--tier-1-amber); color: var(--tier-1-amber);" href="https://pydevices.github.io/pydevices/">pydevices Core</a>
     </div>
   </section>
 
-  <main class="cards wrap">
+  <main class="wrap" style="padding-bottom: 60px;">
     <div class="section-head">
-      <h2>Build a sample APK</h2>
-      <span class="hint">requires Android SDK/NDK + buildozer</span>
+      <h2>Build APK Instructions</h2>
+      <span class="hint">Requires Android SDK/NDK &amp; buildozer</span>
     </div>
-    <div class="install-block">
-      <pre><code>git clone https://github.com/PyDevices/pydevices-android-template.git
+
+    <div class="spec-block">
+      <pre><code># Clone template repository:
+git clone https://github.com/PyDevices/pydevices-android-template.git
 cd pydevices-android-template
 
-./build_android.sh              # prompts for launcher title
-./build_android.sh -y           # keep current title (CI)
-./build_android.sh --title Paint
+# Run automated Android build script:
+./build_android.sh --title "PyDevices Demo App"
 
-# APK under p4a_app/bin/
-./scripts/emulator.sh</code></pre>
+# Generated APK output:
+# p4a_app/bin/pydevicesdemoapp-0.1-debug.apk</code></pre>
     </div>
-
-    <div class="section-head" style="margin-top: 36px;">
-      <h2>Runtime / SDL (from <code>p4a_app</code>)</h2>
-      <span class="hint">same <code>Runtime</code> idiom as desktop PyDevices apps</span>
-    </div>
-    <div class="snippet-grid">
-      <div class="snippet-card">
-        <h3>board_config</h3>
-        <p><code>pydevices-desktop</code> supplies neutral display and input endpoints; an application opts into a traffic controller when needed.</p>
-        <pre><code>import board_config
-import eventsys
-
-display_drv = board_config.display_drv
-runtime = eventsys.Runtime.from_board_config(board_config)</code></pre>
-      </div>
-      <div class="snippet-card">
-        <h3>paint handlers</h3>
-        <p>From <code>p4a_app/paint.py</code> — register events, then run forever.</p>
-        <pre><code>from board_config import display_drv
-from app_runtime import runtime
-
-runtime.on(runtime.events.MOUSEBUTTONDOWN, handler)
-runtime.on(runtime.events.MOUSEMOTION, on_motion)
-runtime.run_forever()</code></pre>
-      </div>
-    </div>
-
-    <div class="section-head" style="margin-top: 36px;">
-      <h2>Gallery vs APK</h2>
-      <span class="hint">two different delivery paths — do not conflate</span>
-    </div>
-    <div class="grid">
-      <div class="card">
-        <div class="card-top">
-          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
-          <span class="tag featured">Gallery</span>
-        </div>
-        <h3>PyScript Gallery</h3>
-        <p>Runs in Chrome (or as an installed web app). MicroPython or Pyodide in the browser — no APK, no Android SDK. Ideal for quick tryouts of the same examples.</p>
-      </div>
-      <div class="card">
-        <div class="card-top">
-          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 18h.01"/></svg></span>
-          <span class="tag all">APK</span>
-        </div>
-        <h3>Native Android</h3>
-        <p>This repo. CPython inside a python-for-android APK with SDL2, usdl2, and TestPyPI wheels. Install with <code>adb</code> or the emulator script — not via the browser gallery.</p>
-      </div>
-    </div>
-
-    <div class="section-head" style="margin-top: 36px;">
-      <h2>Customize</h2>
-      <span class="hint">clone and replace the sample app</span>
-    </div>
-    <div class="grid">
-      <div class="card">
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></span>
-        <h3><code>p4a_app/</code></h3>
-        <p>Sample application: <code>board_config.py</code>, <code>paint.py</code>, <code>main.py</code>, and <code>buildozer.spec</code> (package id <code>org.pydevices.p4a_app</code>). Swap in your own application to ship it.</p>
-      </div>
-      <div class="card">
-        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 5v10l-9 5-9-5V7z"/></svg></span>
-        <h3><code>p4a_recipes/</code></h3>
-        <p>Namespaced recipes for the <code>pydevices-*</code> TestPyPI distributions, plus <code>pydeviceslvgl</code> for the native <code>pydevices-lvgl</code> wheel. Core package versions are pinned; the LVGL recipe selects a compatible native wheel.</p>
-      </div>
-    </div>
-
-    <div class="section-head" style="margin-top: 36px;">
-      <h2>Related</h2>
-    </div>
-    <ul class="linklist">
-      <li><a href="https://pydevices.github.io/pydevices-examples/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>pydevices-examples</a></li>
-      <li><a href="https://pydevices.github.io/usdl2/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M8 17v3M16 17v3"/></svg>usdl2</a></li>
-    </ul>
   </main>
 
-    <div id="pydevices-site-footer"></div>
-  <script src="https://pydevices.github.io/assets/js/site-chrome.js"></script>
-  <script src="https://pydevices.github.io/assets/js/theme-toggle.js"></script>
+  <div id="pydevices-site-footer"></div>
+  <script src="./vendor/pydevices-chrome/site-chrome.js"></script>
+  <script src="./vendor/pydevices-chrome/theme-toggle.js"></script>
+  <script src="./vendor/pydevices-chrome/tree-nav.js"></script>
 </body>
 </html>
