@@ -1,76 +1,40 @@
-"""Put '', .frozen (MP/CP), lib, utils first on sys.path."""
+"""Portable, idempotent path configuration for PyDevices runtimes."""
 
 import os
 import sys
 
-__all__ = ["add", "cwd", "update"]
-_extra_dirs = ("utils",)
+# Preferred search path directories in order
+targets = [
+    "",
+    ".frozen",
+    "lib",
+    "utils",
+    os.path.expanduser("~/.micropython/lib"),
+]
+if os.name != "nt":
+    targets.append("/usr/lib/micropython")
 
-
-def cwd():
-    path = os.getcwd()
-    return path if path[-1] == "/" else path + "/"
-
-
-def _exists(name):
-    if name in ("", ".frozen"):
-        return True
-    path = name if name.startswith("/") else cwd() + name
-    try:
-        os.stat(path)
-        return True
-    except OSError:
-        return False
-
-
-def add(directory, front=False):
-    if not _exists(directory):
-        return
-    if directory in sys.path:
-        sys.path.remove(directory)
-    if front:
-        sys.path.insert(0, directory)
+insert_idx = 0
+for t in targets:
+    if t in ("", ".frozen"):
+        if t not in sys.path:
+            sys.path.insert(insert_idx, t)
+            insert_idx += 1
+        else:
+            try:
+                idx = sys.path.index(t)
+                insert_idx = max(insert_idx, idx + 1)
+            except ValueError:
+                pass
     else:
-        sys.path.append(directory)
+        norm_t = os.path.normpath(t)
+        found = False
+        for idx, p in enumerate(sys.path):
+            if p not in ("", ".frozen") and os.path.normpath(p) == norm_t:
+                found = True
+                insert_idx = max(insert_idx, idx + 1)
+                break
+        if not found:
+            sys.path.insert(insert_idx, t)
+            insert_idx += 1
 
-
-def update():
-    # Prepend in reverse so the final order is:
-    # '', .frozen, lib, utils, <stdlib...>
-    # utils must precede the stdlib so ``import secrets`` resolves to
-    # utils/secrets.py on CPython (stdlib also ships a ``secrets`` module).
-    for directory in reversed(_extra_dirs):
-        add(directory, front=True)
-    add("lib", front=True)
-    # Desktop sibling checkout: events.py / keys.py / multimer in hardware lib/.
-    for candidate in ("../pydevices/lib", "../../pydevices/lib"):
-        if _exists(candidate):
-            add(candidate, front=True)
-            break
-    # byteswap, mip, viper_tools, keypins, wifi, frame_recorder, micropython shim.
-    for candidate in ("../pydevices/utils", "../../pydevices/utils"):
-        if _exists(candidate):
-            add(candidate, front=True)
-            break
-    # displaydev package lives in hardware drivers/display/.
-    for candidate in (
-        "../pydevices/drivers/display",
-        "../../pydevices/drivers/display",
-    ):
-        if _exists(candidate):
-            add(candidate, front=True)
-            break
-    if sys.implementation.name in ("micropython", "circuitpython"):
-        add(".frozen", front=True)
-    add("", front=True)
-    try:
-        import pydevices_test_mode
-
-        quiet = pydevices_test_mode.ENABLED
-    except ImportError:
-        quiet = False
-    if not quiet:
-        print("path.py:  updated sys.path.")
-
-
-update()
