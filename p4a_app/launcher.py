@@ -17,7 +17,7 @@ import subprocess
 import sys
 import traceback
 
-INDEX = "https://PyDevices.github.io/micropython-lib/mip/PyDevices"
+INDEX = "https://PyDevices.github.io/mip"
 TESTPYPI = "https://test.pypi.org/simple/"
 PYPI = "https://pypi.org/simple/"
 
