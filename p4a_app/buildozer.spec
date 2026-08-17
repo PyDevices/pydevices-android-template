@@ -1,16 +1,14 @@
 [app]
-title = PyDevices Launcher
-package.name = launcher
+title = PyDevices App
+package.name = myapp
 package.domain = org.pydevices
 source.dir = .
 source.include_exts = py,xml
-# p4a/sdl2 still requires a main.py in the private bundle. Runtime entry is
-# boot.py via the getEntryPoint patch in build_android.sh (MicroPython-shaped).
 source.main = main.py
-# PyDevices logo (from PyDevices.github.io/assets/img/logo-512.png)
+# App icon and presplash
 icon.filename = %(source.dir)s/icon.png
 presplash.filename = %(source.dir)s/icon.png
-version = 0.5.0
+version = 0.1.0
 # Standalone LVGL launcher + baked TestPyPI stack. Native: pygraphics /
 # pydevices-lvgl Android wheels. pydevices-desktop ships usdl2 + board_config;
 # p4a sdl2 bootstrap provides libSDL2.so.
