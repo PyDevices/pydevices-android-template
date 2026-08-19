@@ -96,7 +96,7 @@ Almost everything a user customizes for their APK lives under **`p4a_app/`**:
 
 | Customize | Where |
 |-----------|--------|
-| Entry / demo code | `p4a_app/main.py`, `launcher.py` (or stage examples via `scripts/android.sh`); startup in `boot.py` |
+| Entry / demo code | `p4a_app/main.py`, `launcher.py` (or stage examples via `android.py` from the pydevices repo); startup in `boot.py` |
 | Display size / rotation / scale | `PYDEVICES_*` env in `boot.py` (or `board_config_tv.py` from `main.py` for TV) |
 | Title, package id, orientation, version, permissions, `requirements` | `p4a_app/buildozer.spec` |
 | Icon / presplash | `p4a_app/icon.png` (paths in the spec) |
