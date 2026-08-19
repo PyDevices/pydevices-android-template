@@ -1,4 +1,4 @@
-# pydevices-android-template
+# android-template
 
 Android APK starter template for the [PyDevices](https://github.com/PyDevices/pydevices) product stack: **python-for-android** recipes and a **Buildozer** app (`p4a_app/`) you can clone and customize with your own code.
 
